@@ -52,20 +52,20 @@ const Login = () => {
         try {
             const { email, password, role } = data;
             
-            // const res = await signIn("credentials", {
-            //     role,
-            //     email,
-            //     password,
-            //     redirect: false,
-            // });
+            const res = await signIn("credentials", {
+                role,
+                email,
+                password,
+                redirect: false,
+            });
             
-            // if(!res?.ok){
-            //     toast.error("Opps! Something went wrong.",{
-            //         description: res?.error
-            //     });
-            // } else {
-            //     router.replace('/');
-            // }
+            if(!res?.ok){
+                toast.error("Opps! Something went wrong.",{
+                    description: res?.error
+                });
+            } else {
+                router.replace('/');
+            }
         } catch (error) { 
             toast.error("Someting went wrong.");
         }
