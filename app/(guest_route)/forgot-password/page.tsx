@@ -51,7 +51,9 @@ const ForgotPassword = () => {
         toast.message(`One-time password has been sent to your email,`,{
             description: data.email
         })
-        setTabsValues(prev=>[...prev,Tabs.OTP])
+        // setTabsValues(prev=>[...prev,Tabs.OTP])
+        setTabsValues([...tabsValues,Tabs.OTP]);
+
 
         // else
         // toast.error(`Something went wrong.`)
@@ -78,7 +80,9 @@ const ForgotPassword = () => {
         
         // ok
         toast.success(`OTP Verified`);
-        setTabsValues(prev=>[...prev,Tabs.CHANGE_PASSWORD]);
+        // setTabsValues(prev=>[...prev,Tabs.CHANGE_PASSWORD]);
+        setTabsValues([...tabsValues,Tabs.CHANGE_PASSWORD]);
+
         setIsTabActionDisabeled(true);
 
         // else
