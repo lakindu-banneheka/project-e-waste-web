@@ -153,6 +153,15 @@ interface RenderTabProps {
 }
 
 function RenderTab({activeTab, email_form, password_form, onSubmitPasswordChange, onSubmitEmail, otpVerification}: RenderTabProps) {
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+    };
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
+
     switch (activeTab) {
         case Tabs.EMAIL:
             return (
@@ -191,14 +200,6 @@ function RenderTab({activeTab, email_form, password_form, onSubmitPasswordChange
                 />
             );
         case Tabs.CHANGE_PASSWORD:
-            const [showPassword, setShowPassword] = useState(false);
-            const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-            const togglePasswordVisibility = () => {
-            setShowPassword(!showPassword);
-            };
-            const toggleConfirmPasswordVisibility = () => {
-                setShowConfirmPassword(!showConfirmPassword);
-            };
             return (
                 <div>
                     <Form {...password_form}>
