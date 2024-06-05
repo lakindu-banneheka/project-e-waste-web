@@ -99,7 +99,6 @@ const Login = () => {
     };
 
     return (
-        <>
             <div className="w-full lg:grid lg:grid-cols-2">
                 <AuthBackground />
                 <div className="flex items-center justify-center py-12">
@@ -265,7 +264,6 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-        </>
     );
 }
 

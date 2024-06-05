@@ -13,11 +13,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { UserRole } from "@/types/User";
 import { AuthBackground } from "@/components/auth/auth-background";
 import { universityEmailSchema, userRoleSchema } from "@/utils/user-validation";
+import { useEffect, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 const schema = z.object({
     role: userRoleSchema,
     email: universityEmailSchema,
-    password: z.string(),
+    password: z.string().nonempty({message: 'Password Required'}),
   });
   
   type FormFields = z.infer<typeof schema>;
@@ -30,10 +32,16 @@ const Login = () => {
         handleSubmit,
         setError,
         setValue, 
+        watch,
         formState: {errors, isSubmitting} 
     } = useForm<FormFields>({ 
         resolver: zodResolver(schema),
     });
+
+    useEffect(() => {
+        setValue('role', watch('role'), { shouldValidate: true });
+    }, [watch('role'), setValue]);
+
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
         console.log(data);
@@ -59,15 +67,16 @@ const Login = () => {
         // }
     }
     
-    // {errors.root && (
-    //     <div className="text-red-500 mb-4 text-sm" >{errors.root.message}</div>
-    // )}
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     return (
         <>
-            <div className="w-full lg:grid  lg:grid-cols-2">
+            <div className="w-full lg:grid  lg:grid-cols-2 h-screen md:overflow-auto">
                 <AuthBackground />
-                <div className="flex items-center justify-center py-12">
+                <div className="flex items-start justify-center py-12">
                     <div className="mx-auto grid w-[350px] gap-6">
                         <div className="grid gap-2 w-full" >
                             <div className="flex justify-center w-full items-center" >
@@ -76,7 +85,7 @@ const Login = () => {
                                     alt="Image"
                                     width="200"
                                     height="80" 
-                                    className=" " // dark:grayscale
+                                    className="w-auto h-auto" // dark:grayscale
                                 />
                             </div>
                         </div>
@@ -94,7 +103,6 @@ const Login = () => {
                                 <Label htmlFor="account-type">Account Type</Label>
                                 <Select 
                                     onValueChange={(value) => setValue('role', value === UserRole.Contributor ? UserRole.Contributor : UserRole.Admin)}
-                                    defaultValue={UserRole.Contributor}
                                     {...register("role")}
                                 >
                                     <SelectTrigger className="w-full">
@@ -126,12 +134,19 @@ const Login = () => {
                                 <div className="flex items-center">
                                     <Label htmlFor="password">Password</Label>
                                 </div>
-                                <Input 
-                                    {...register("password")}
-                                    id="password" 
-                                    type="password" 
-                                    // required 
-                                />
+                                <div className="relative" >
+                                    <Input 
+                                        {...register("password")}
+                                        id="password" 
+                                        type={showPassword ? 'text' : 'password'}
+                                    />
+                                    <span
+                                            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600 dark:text-gray-400 cursor-pointer"
+                                            onClick={togglePasswordVisibility}
+                                        >
+                                            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                    </span>
+                                </div>
                                 {errors.password && (
                                     <div className="text-red-500 text-xs" >{errors.password.message}</div>
                                 )}
