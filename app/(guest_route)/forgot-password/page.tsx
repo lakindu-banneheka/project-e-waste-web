@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { InputOTPForm } from "@/components/InputOTPForm";
 import { BreadcrumbWithCustomSeparator } from "@/components/forgot-password/BreadcrumbWithCustomSeparator";
 import { Eye, EyeOff } from "lucide-react";
+import { Tabs } from "@/types/forgot-password-tabs";
 
 const FormEmailSchema = z.object({
     email: universityEmailSchema
@@ -136,12 +137,6 @@ const ForgotPassword = () => {
 }
 
 export default ForgotPassword;
-
-export enum Tabs {
-    EMAIL = "Email",
-    OTP = "OTP",
-    CHANGE_PASSWORD = "Change Password"
-}
 
 interface RenderTabProps {
     activeTab: Tabs;

@@ -6,7 +6,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Tabs } from "@/app/(guest_route)/forgot-password/page";
+import { Tabs } from "@/types/forgot-password-tabs";
 
 interface BreadcrumProps {
     breadcrumValues: Tabs[],
