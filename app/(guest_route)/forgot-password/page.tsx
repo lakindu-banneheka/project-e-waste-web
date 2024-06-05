@@ -52,7 +52,8 @@ const ForgotPassword = () => {
             description: data.email
         })
         // setTabsValues(prev=>[...prev,Tabs.OTP])
-        setTabsValues([...tabsValues,Tabs.OTP]);
+        const newTabVals = [...tabsValues, Tabs.OTP];
+        setTabsValues(newTabVals);
 
 
         // else
@@ -80,8 +81,8 @@ const ForgotPassword = () => {
         
         // ok
         toast.success(`OTP Verified`);
-        // setTabsValues(prev=>[...prev,Tabs.CHANGE_PASSWORD]);
-        setTabsValues([...tabsValues,Tabs.CHANGE_PASSWORD]);
+        const newTabVals = [...tabsValues, Tabs.CHANGE_PASSWORD];
+        setTabsValues(newTabVals);
 
         setIsTabActionDisabeled(true);
 
