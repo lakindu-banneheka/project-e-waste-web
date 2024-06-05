@@ -27,7 +27,14 @@ const FormSchema = z.object({
   }),
 })
 
-export function InputOTPForm() {
+interface InputOTPFormProps {
+  label?: string;
+  formDescription?: string;
+  buttonLabel?: string;
+  otpVerification: ({pin}: {pin: string})=>void;
+}
+
+export function InputOTPForm({ label, buttonLabel, formDescription, otpVerification }: InputOTPFormProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -43,7 +50,8 @@ export function InputOTPForm() {
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    })
+    });
+    otpVerification({pin: data.pin})
   }
 
   return (
@@ -54,7 +62,7 @@ export function InputOTPForm() {
           name="pin"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>One-Time Password</FormLabel>
+              <FormLabel>{ label || `One-Time Password`}</FormLabel>
               <FormControl>
                 <InputOTP maxLength={6} {...field}>
                   <InputOTPGroup>
@@ -71,14 +79,14 @@ export function InputOTPForm() {
                 </InputOTP>
               </FormControl>
               <FormDescription>
-                Please enter the one-time password sent to your phone.
+                {formDescription}
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type="submit">Submit</Button>
+        <Button type="submit">{ buttonLabel || `Submit`}</Button>
       </form>
     </Form>
   )
