@@ -14,6 +14,10 @@ import { firstNameSchema, lastNameSchema, passwordSchema, phoneNumberSchema, uni
 import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { createUser } from "@/server/user";
 
 const schema = z.object({
     role: userRoleSchema,
@@ -41,7 +45,7 @@ const schema = z.object({
   
 
 const Login = () => {
-
+    const router = useRouter();
     const { 
         register, 
         handleSubmit,
@@ -57,34 +61,37 @@ const Login = () => {
         }
     });
 
+    const { 
+        data, 
+        mutate: server_createUser,
+        isPending,
+    } = useMutation({
+        mutationFn: createUser,
+        onSuccess: () => {
+            toast.success("New Contributer has been created.");
+            router.push('/auth/login');
+        },
+        onError(error, variables, context) {
+            setError("root", {
+                type: error.name,
+                message: error.message,
+            }); 
+            toast.error(error.name,{
+                description: error.message
+            });
+        },
+    })
+
     useEffect(() => {
         setValue('isTermsAccepted', watch('isTermsAccepted'), { shouldValidate: true });
     }, [watch('isTermsAccepted'), setValue]);
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
-        console.log(data);
-        
-        // try {
-        //     // await new Promise((resolve) => setTimeout(resolve,1000));
-        //     console.log(data);
-        //     const { email, password } = data;
-            
-        //     const res = await signIn("credentials", {
-        //         email,
-        //         password,
-        //         redirect: false,
-        //     });
-          
-        //     router.replace('/'); // to the route after login
-
-        // } catch (err) { 
-        //     setError("root", {
-        //         type: "manual",
-        //         message: "The email address or password is incorrect. ",
-        //     });
-        // }
+        server_createUser({user: data});
     }
     
+    console.log(data);
+
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const togglePasswordVisibility = () => {
@@ -245,10 +252,10 @@ const Login = () => {
                             </div>
                             <Button 
                                 type="submit" 
-                                className="w-full text-gray-50 font-semibold text-md"
-
+                                className={`w-full text-gray-50 font-semibold text-md transition-all duration-300 ${isSubmitting || isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                disabled={isSubmitting || isPending}
                             >
-                                Register
+                                {isSubmitting || isPending ? 'Creating new account...' : 'Register'}
                             </Button>
                         </form>
                         <div className="mt-4 text-center text-sm">

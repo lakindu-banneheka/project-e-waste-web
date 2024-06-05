@@ -2,7 +2,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import logo from '@/assets/logo/ewaste_logo 1.png';
-import { z } from "zod";
+import { unknown, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { signIn } from 'next-auth/react';
@@ -15,6 +15,8 @@ import { AuthBackground } from "@/components/auth/auth-background";
 import { universityEmailSchema, userRoleSchema } from "@/utils/user-validation";
 import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const schema = z.object({
     role: userRoleSchema,
@@ -26,6 +28,7 @@ const schema = z.object({
   
 
 const Login = () => {
+    const router = useRouter();
 
     const { 
         register, 
@@ -46,25 +49,26 @@ const Login = () => {
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
         console.log(data);
         
-        // try {
-        //     // await new Promise((resolve) => setTimeout(resolve,1000));
-        //     console.log(data);
-        //     const { email, password } = data;
+        try {
+            const { email, password, role } = data;
             
-        //     const res = await signIn("credentials", {
-        //         email,
-        //         password,
-        //         redirect: false,
-        //     });
-          
-        //     router.replace('/'); // to the route after login
-
-        // } catch (err) { 
-        //     setError("root", {
-        //         type: "manual",
-        //         message: "The email address or password is incorrect. ",
-        //     });
-        // }
+            const res = await signIn("credentials", {
+                role,
+                email,
+                password,
+                redirect: false,
+            });
+            
+            if(!res?.ok){
+                toast.error("Opps! Something went wrong.",{
+                    description: res?.error
+                });
+            } else {
+                router.replace('/');
+            }
+        } catch (error) { 
+            toast.error("Someting went wrong.");
+        }
     }
     
     const [showPassword, setShowPassword] = useState(false);
@@ -85,7 +89,7 @@ const Login = () => {
                                     alt="Image"
                                     width="200"
                                     height="80" 
-                                    className="w-auto h-auto" // dark:grayscale
+                                    className="w-auto h-auto"
                                 />
                             </div>
                         </div>
@@ -159,8 +163,8 @@ const Login = () => {
                             </Link>
                             <Button 
                                 type="submit" 
-                                className="w-full text-gray-50 font-semibold text-md"
-
+                                className={`w-full text-gray-50 font-semibold text-md ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                disabled={isSubmitting}
                             >
                                 Login
                             </Button>

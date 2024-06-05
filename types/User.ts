@@ -4,8 +4,7 @@ export enum UserRole {
     Contributor = "contributor",
 }  
 
-export interface UserData {
-    _id: string;
+export interface BasicUser {
     email: string; // university email only
     password: string;
     role: UserRole;
@@ -14,4 +13,8 @@ export interface UserData {
     lastName: string;
     userName: string;
     universityId: string; // university id
+}
+
+export interface UserData extends BasicUser {
+    _id: string;
 }
