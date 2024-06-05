@@ -61,12 +61,8 @@ const Login = () => {
         setValue('isTermsAccepted', watch('isTermsAccepted'), { shouldValidate: true });
     }, [watch('isTermsAccepted'), setValue]);
 
-    // // useEffect(() => {
-    // //     setValue('confirmPassword', watch('confirmPassword'), { shouldValidate: true });
-    // // }, [watch('confirmPassword'), setValue]);
-
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
-        console.log('submit',data);
+        console.log(data);
         
         // try {
         //     // await new Promise((resolve) => setTimeout(resolve,1000));
