@@ -1,6 +1,6 @@
 import startDb from "@/lib/db";
 import UserModel from "@/models/UserModel";
-import { UserData } from "@/types/User";
+import { UserData, UserRole } from "@/types/User";
 import { NextAuthOptions, User } from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
 
@@ -21,25 +21,27 @@ export const authOptions: NextAuthOptions = {
             type: "credentials",
             credentials: {},
             async authorize(credentials, req) : Promise<CustomUser | null> {
-                const { email, password } = credentials as {
+                const { email, password, role } = credentials as {
                     email: string,
-                    password: string
+                    password: string,
+                    role: UserRole
                 };
 
                 await startDb();
 
                 const user: ResponseUser | null = await UserModel.findOne({ email });
-                if (!user) throw new Error("Email/password mismatch!");
+                if (!user) throw new Error("Email / password mismatch!");
 
                 const passwordMatch = await user.comparePassword(password);
-                if (!passwordMatch) throw new Error("Email/password mismatch!");
+                if (!passwordMatch) throw new Error("Email / password mismatch!");
 
-                // const {email, id, role}: {email: string, id:string, role: string} = user;
+                const roleMatch = await user.role === role || user.role === UserRole.Admin;
+                if (!roleMatch) throw new Error("Account Type mismatch!");
 
                 return {
                     email: user.email,
                     id: user._id, 
-                    role: user.role
+                    role: role
                 };
             },
         }),

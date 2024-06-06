@@ -47,8 +47,6 @@ const Login = () => {
 
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
-        console.log(data);
-        
         try {
             const { email, password, role } = data;
             
@@ -60,9 +58,7 @@ const Login = () => {
             });
             
             if(!res?.ok){
-                toast.error("Opps! Something went wrong.",{
-                    description: res?.error
-                });
+                toast.error(res?.error);
             } else {
                 router.replace('/');
             }
