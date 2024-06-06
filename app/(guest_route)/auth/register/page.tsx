@@ -72,13 +72,12 @@ const Login = () => {
             router.push('/auth/login');
         },
         onError(error, variables, context) {
-            setError("root", {
-                type: error.name,
-                message: error.message,
-            }); 
-            toast.error(error.name,{
-                description: error.message
-            });
+            // setError("root", {
+            //     type: error.name,
+            //     message: error.message,
+            // }); 
+            toast.error(error.message,
+            );
         },
     })
 
@@ -88,10 +87,10 @@ const Login = () => {
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
         server_createUser({user: data});
+        // the email and phone no verification
+        
     }
     
-    console.log(data);
-
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const togglePasswordVisibility = () => {

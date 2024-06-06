@@ -121,7 +121,7 @@ const Login = () => {
                                 <Label htmlFor="email">Email</Label>
                                 <Input
                                     {...register("email")}
-                                    id="email"
+                                    name="email"
                                     type="email"
                                     placeholder="example@stu.kln.ac.lk"
                                     // required

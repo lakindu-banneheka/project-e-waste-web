@@ -30,10 +30,10 @@ export const authOptions: NextAuthOptions = {
                 await startDb();
 
                 const user: ResponseUser | null = await UserModel.findOne({ email });
-                if (!user) throw new Error("Email / password mismatch!");
+                if (!user) throw new Error("Email or Password mismatch!");
 
                 const passwordMatch = await user.comparePassword(password);
-                if (!passwordMatch) throw new Error("Email / password mismatch!");
+                if (!passwordMatch) throw new Error("Email or Password mismatch!");
 
                 const roleMatch = await user.role === role || user.role === UserRole.Admin;
                 if (!roleMatch) throw new Error("Account Type mismatch!");

@@ -7,9 +7,9 @@ import { UserRole } from "@/types/User";
 
 interface UserDocument extends Document {
     email: string; // university email only
+    phoneNo: string;
     password: string;
     role: UserRole;
-    phoneNo: string;
     firstName: string;
     lastName: string;
     userName: string;

@@ -6,9 +6,9 @@ export enum UserRole {
 
 export interface BasicUser {
     email: string; // university email only
+    phoneNo: string;
     password: string;
     role: UserRole;
-    phoneNo: string;
     firstName: string;
     lastName: string;
     userName: string;
