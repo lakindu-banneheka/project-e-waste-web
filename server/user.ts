@@ -2,42 +2,26 @@
 import startDb from "@/lib/db";
 import UserModel from "@/models/UserModel";
 import { BasicUser, UserRole } from "@/types/User"
-import { NextResponse } from "next/server";
 
-interface CreateUserReq extends BasicUser {}
-interface NewUserResponse {
-    _id: string;
-    email:  string;
-    role: UserRole;
+interface CreateUserReq extends BasicUser {
+    password: string;
 }
-
-type NewResponse = NextResponse<{ user?: NewUserResponse; error?: string }>;
 
 export const createUser = async ({user}: {user: CreateUserReq}) => {
 
     await startDb();
 
-    const oldUser = await UserModel.findOne({email: user.email});
-    if(oldUser){
-        return NextResponse.json(
-            {error: "Email is already in use!"},
-            {status: 422}
-        );   
-    }
+    const oldUser = await UserModel.findOne({email: user.email.toLocaleLowerCase()});
+    if(oldUser) throw new Error("Email is already in use!");
 
-    const newUser = await UserModel.create({...user});
-    // const newUser = {
-    //     _id: '123',
-    //     email: user.email,
-    //     role: user.role
-    // }
+    const newUser = await UserModel.create({...user, email: user.email.toLocaleLowerCase()});
 
     return {
-        // user: {
-            _id: newUser._id,
-            email: newUser.email,
-            phoneNo: newUser.phoneNo,
-            role: newUser.role,
-        // },
+        _id: newUser._id,
+        email: newUser.email,
+        phoneNo: newUser.phoneNo,
+        role: newUser.role,
+        is_email_verified: newUser.is_email_verified,
+        is_phoneno_verified: newUser.is_phoneno_verified
     }
 }

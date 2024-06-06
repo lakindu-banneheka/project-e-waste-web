@@ -8,9 +8,8 @@ interface Props {
 }
 
 export default async function GestLayout ({ children }: Props) {
-    const session = await getServerSession(authOptions)
-
-    if(session) redirect("/");
+    const session = await getServerSession(authOptions);
+    if(session && session.user.is_email_verified && session.user.is_phoneno_verified) redirect("/");
 
     return <>{children}</>;
 } 

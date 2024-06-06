@@ -5,7 +5,7 @@ import logo from '@/assets/logo/ewaste_logo 1.png';
 import { unknown, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { signIn } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -17,6 +17,8 @@ import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { VerifyEmailMobileDialog } from "@/components/auth/verify-email-mobile/verify-email-mobile-dialog";
+import { stat } from "fs";
 
 const schema = z.object({
     role: userRoleSchema,
@@ -29,6 +31,8 @@ const schema = z.object({
 
 const Login = () => {
     const router = useRouter();
+    const { data, status } = useSession();
+    const [isVerificationDialogOpen, setIsVerificationDialogOpen] = useState<boolean>(false);
 
     const { 
         register, 
@@ -45,10 +49,22 @@ const Login = () => {
         setValue('role', watch('role'), { shouldValidate: true });
     }, [watch('role'), setValue]);
 
+    useEffect(() => {
+        if(status === 'authenticated'){
+            const user = data?.user;
+            if(user){
+                if((!user.is_email_verified || !user.is_phoneno_verified)){
+                    setIsVerificationDialogOpen(true);
+                } else {
+                    router.replace('/');
+                }
+            } 
+        }
+    },[data?.user]);
 
-    const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    const onSubmit: SubmitHandler<FormFields> = async (user) => {
         try {
-            const { email, password, role } = data;
+            const { email, password, role } = user;
             
             const res = await signIn("credentials", {
                 role,
@@ -59,8 +75,6 @@ const Login = () => {
             
             if(!res?.ok){
                 toast.error(res?.error);
-            } else {
-                router.replace('/');
             }
         } catch (error) { 
             toast.error("Someting went wrong.");
@@ -121,7 +135,7 @@ const Login = () => {
                                 <Label htmlFor="email">Email</Label>
                                 <Input
                                     {...register("email")}
-                                    id="email"
+                                    name="email"
                                     type="email"
                                     placeholder="example@stu.kln.ac.lk"
                                     // required
@@ -174,6 +188,14 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+            <VerifyEmailMobileDialog 
+                isOpen={isVerificationDialogOpen}
+                email={data?.user.email || ''}
+                is_email_verified={data?.user.is_email_verified || false}
+                user_id={data?.user._id || ''}
+                phoneno={data?.user.phoneNo || ''}
+                is_phoneno_verified={data?.user.is_email_verified || false}
+            />
         </>
     );
 }

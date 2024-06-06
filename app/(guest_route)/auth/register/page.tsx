@@ -18,6 +18,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/server/user";
+import { VerifyEmailMobileDialog } from "@/components/auth/verify-email-mobile/verify-email-mobile-dialog";
 
 const schema = z.object({
     role: userRoleSchema,
@@ -41,11 +42,27 @@ const schema = z.object({
     }
 );
   
-  type FormFields = z.infer<typeof schema>;
-  
+type FormFields = z.infer<typeof schema>;
+
+interface VerificationDialogOpenProps {
+	is_email_verified: boolean;
+	is_phoneno_verified: boolean;
+	user_id: string;
+	email: string;
+	phoneno: string;
+}
 
 const Login = () => {
     const router = useRouter();
+    const [isVerificationDialogOpen, setIsVerificationDialogOpen] = useState<boolean>(false);
+    const [user, setUser] = useState<VerificationDialogOpenProps>({
+        email: '',
+        is_email_verified: false,
+        is_phoneno_verified: false,
+        phoneno: '',
+        user_id: ''
+    });
+
     const { 
         register, 
         handleSubmit,
@@ -69,16 +86,25 @@ const Login = () => {
         mutationFn: createUser,
         onSuccess: () => {
             toast.success("New Contributer has been created.");
-            router.push('/auth/login');
+            if(!data?.is_email_verified || !data?.is_phoneno_verified){
+                setUser({
+                    email: data?.email || '',
+                    is_email_verified: data?.is_email_verified || false,
+                    is_phoneno_verified: data?.is_phoneno_verified || false,
+                    phoneno: data?.phoneNo || '',
+                    user_id: data?._id as string || ''
+                })
+                setIsVerificationDialogOpen(true);
+            }
+            // router.push('/auth/login');
         },
         onError(error, variables, context) {
-            setError("root", {
-                type: error.name,
-                message: error.message,
-            }); 
-            toast.error(error.name,{
-                description: error.message
-            });
+            // setError("root", {
+            //     type: error.name,
+            //     message: error.message,
+            // }); 
+            toast.error(error.message,
+            );
         },
     })
 
@@ -88,10 +114,9 @@ const Login = () => {
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
         server_createUser({user: data});
+        // the email and phone no verification
     }
     
-    console.log(data);
-
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const togglePasswordVisibility = () => {
@@ -266,6 +291,10 @@ const Login = () => {
                         </div>
                     </div>
                 </div>
+                <VerifyEmailMobileDialog 
+                    isOpen={isVerificationDialogOpen}
+                    {...user}
+                />
             </div>
     );
 }

@@ -7,9 +7,11 @@ import { UserRole } from "@/types/User";
 
 interface UserDocument extends Document {
     email: string; // university email only
+    phoneNo: string;
+    is_email_verified: boolean;
+    is_phoneno_verified: boolean; 
     password: string;
     role: UserRole;
-    phoneNo: string;
     firstName: string;
     lastName: string;
     userName: string;
@@ -23,6 +25,8 @@ interface Methods {
 const userSchema = new Schema<UserDocument, {}, Methods>({
     email: {type: String, required: true, unique: true},
     phoneNo: {type: String, required: true},
+    is_email_verified: {type: Boolean, default: false},
+    is_phoneno_verified: {type: Boolean, default: false},
     password: {type: String, required: true},
     role: {type: String, enum: UserRole, default: UserRole.Contributor},
     firstName: {type: String, required: true},

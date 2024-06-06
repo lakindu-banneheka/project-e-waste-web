@@ -1,4 +1,5 @@
 'use client'
+import { VerifyEmailMobileDialog } from "@/components/auth/verify-email-mobile/verify-email-mobile-dialog";
 import { Header } from "@/components/nav/header";
 import { useSession } from "next-auth/react";
 
@@ -9,7 +10,9 @@ export default function Home() {
   return (
     <>
       <Header />
-      test
+      {/* <VerifyEmailMobileDialog 
+        isOpen={true}
+      /> */}
     </>
   );
 }
