@@ -15,28 +15,28 @@ type NewResponse = NextResponse<{ user?: NewUserResponse; error?: string }>;
 
 export const createUser = async ({user}: {user: CreateUserReq}) => {
 
-    // await startDb();
+    await startDb();
 
-    // const oldUser = await UserModel.findOne({email: user.email});
-    // if(oldUser){
-    //     return NextResponse.json(
-    //         {error: "Email is already in use!"},
-    //         {status: 422}
-    //     );   
-    // }
-
-    console.log(user);
-    // const newUser = await UserModel.create({...user});
-    const newUser = {
-        _id: '123',
-        email: user.email,
-        role: user.role
+    const oldUser = await UserModel.findOne({email: user.email});
+    if(oldUser){
+        return NextResponse.json(
+            {error: "Email is already in use!"},
+            {status: 422}
+        );   
     }
+
+    const newUser = await UserModel.create({...user});
+    // const newUser = {
+    //     _id: '123',
+    //     email: user.email,
+    //     role: user.role
+    // }
 
     return {
         // user: {
             _id: newUser._id,
             email: newUser.email,
+            phoneNo: newUser.phoneNo,
             role: newUser.role,
         // },
     }

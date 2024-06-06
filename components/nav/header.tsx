@@ -1,12 +1,22 @@
+'use client'
 import { CircleUser, Menu, Package2, Search } from "lucide-react"
 import Link from "next/link"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet"
+import { signOut } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 
 export const Header = () => {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut();
+    router.push('/auth/login');
+  };
+
     return (
         <>
             <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -123,7 +133,11 @@ export const Header = () => {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleLogout}
+              >
+                Logout
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

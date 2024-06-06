@@ -177,7 +177,7 @@ const Login = () => {
                                 )}
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="phone-no">Mobile Np</Label>
+                                <Label htmlFor="phone-no">Mobile No</Label>
                                 <Input
                                     {...register("phoneNo")}
                                     id="phone-no"
