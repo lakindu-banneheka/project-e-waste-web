@@ -3,7 +3,9 @@ import startDb from "@/lib/db";
 import UserModel from "@/models/UserModel";
 import { BasicUser, UserRole } from "@/types/User"
 
-interface CreateUserReq extends BasicUser {}
+interface CreateUserReq extends BasicUser {
+    password: string;
+}
 
 export const createUser = async ({user}: {user: CreateUserReq}) => {
 
@@ -19,5 +21,7 @@ export const createUser = async ({user}: {user: CreateUserReq}) => {
         email: newUser.email,
         phoneNo: newUser.phoneNo,
         role: newUser.role,
+        is_email_verified: newUser.is_email_verified,
+        is_phoneno_verified: newUser.is_phoneno_verified
     }
 }

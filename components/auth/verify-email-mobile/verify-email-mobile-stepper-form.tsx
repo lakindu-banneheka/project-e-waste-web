@@ -1,5 +1,4 @@
 "use client";
-
 import { Step, StepItem, Stepper, useStepper } from "@/components/stepper";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
@@ -7,17 +6,26 @@ import { InputOTPForm } from "@/components/InputOTPForm";
 import { Mail, Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-// const steps = [
-// 	{ label: "Email", description: "Email Verification" },
-// 	{ label: "Phone Number", description: "Phone Number Verification" },
-// ];
-
 const steps = [
-	{ label: "Email", icon: Mail }, //description: "Email Verification",
+	{ label: "Email", icon: Mail }, //description: "OTP was sent to la***.ac.lk",
 	{ label: "Phone Number", icon: Phone }, // description: "Phone Number Verification",
 ] satisfies StepItem[];
 
-export default function VerifyEmailMobileStepperForm() {
+interface VerifyEmailMobileStepperFormProps {
+	is_email_verified: boolean;
+	is_phoneno_verified: boolean;
+	user_id: string;
+	email: string;
+	phoneno: string;
+}
+
+export default function VerifyEmailMobileStepperForm({
+	is_email_verified,
+	is_phoneno_verified,
+	user_id,
+	email,
+	phoneno,
+}: VerifyEmailMobileStepperFormProps) {
 	return (
 		<div className="flex w-full flex-col gap-4">
 			<Stepper variant="circle-alt" initialStep={0} steps={steps}>
@@ -26,7 +34,11 @@ export default function VerifyEmailMobileStepperForm() {
 						return (
 							<Step key={stepProps.label} {...stepProps}>
 								<div className="h-40 w-100 flex items-center justify-center my-2rounded-md">
-									<FirstStepForm />
+									<FirstStepForm 
+										email={email}
+										is_email_verified={is_email_verified}
+										user_id={user_id}
+									/>
 								</div>
 							</Step>
 						);
@@ -34,7 +46,11 @@ export default function VerifyEmailMobileStepperForm() {
 					return (
 						<Step key={stepProps.label} {...stepProps}>
 							<div className="h-40 w-100 flex items-center justify-center my-2rounded-md">
-								<SecondStepForm />
+								<SecondStepForm 
+									phoneno={phoneno}
+									is_phoneno_verified={is_phoneno_verified}
+									user_id={user_id}
+								/>
 							</div>
 						</Step>
 					);
@@ -45,12 +61,26 @@ export default function VerifyEmailMobileStepperForm() {
 	);
 }
 
+interface FirstStepFormProps {
+	is_email_verified: boolean;
+	user_id: string;
+	email: string;
+}
 
-function FirstStepForm() {
+function FirstStepForm({
+	is_email_verified,
+	user_id,
+	email,
+}:FirstStepFormProps) {
 	const { nextStep } = useStepper();
+	
+	if(is_email_verified){
+		nextStep();
+	}
 
 	function onSubmit({pin}: {pin: string}) {
 		console.log('email pin', pin);
+		// user_id as a params to update the user schema
 		
 		// after verification
 		nextStep();
@@ -64,21 +94,38 @@ function FirstStepForm() {
 			<InputOTPForm 
 				label="Email Verification OTP"
 				otpVerification={onSubmit}
+				formDescription={`OTP was sent to ${email}`}
 			/>
 		</div>
 	);
 }
 
-function SecondStepForm() {
-	const { nextStep } = useStepper();
 
+interface SecondStepFormProps {
+	user_id: string;
+	is_phoneno_verified: boolean;
+	phoneno: string;
+}
+
+function SecondStepForm({
+	is_phoneno_verified,
+	user_id,
+	phoneno,
+}: SecondStepFormProps) {
+	const { nextStep } = useStepper();
+	
+	if(is_phoneno_verified){
+		nextStep();
+	}
+	
 	function onSubmit({pin}: {pin: string}) {
 		console.log('mobile pin', pin);
 		
+		// user_id as a params to update the user schema
 		// after verification
 		nextStep();
 		toast({
-			title: "Email verified",
+			title: "Phone number verified",
 		});
 	}
 
@@ -87,6 +134,7 @@ function SecondStepForm() {
 			<InputOTPForm 
 				label="Phone Number Verification OTP"
 				otpVerification={onSubmit}
+				formDescription={`OTP was sent to ${phoneno}`}
 			/>
 		</div>
 	);
