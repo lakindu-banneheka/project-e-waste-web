@@ -5,6 +5,7 @@ import { toast } from "@/components/ui/use-toast";
 import { InputOTPForm } from "@/components/InputOTPForm";
 import { Mail, Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 const steps = [
 	{ label: "Email", icon: Mail }, //description: "OTP was sent to la***.ac.lk",
@@ -26,6 +27,9 @@ export default function VerifyEmailMobileStepperForm({
 	email,
 	phoneno,
 }: VerifyEmailMobileStepperFormProps) {
+
+	const router = useRouter();
+
 	return (
 		<div className="flex w-full flex-col gap-4">
 			<Stepper variant="circle-alt" initialStep={0} steps={steps}>
@@ -55,7 +59,9 @@ export default function VerifyEmailMobileStepperForm({
 						</Step>
 					);
 				})}
-				<MyStepperFooter />
+				<MyStepperFooter 
+					router={router}
+				/>
 			</Stepper>
 		</div>
 	);
@@ -175,13 +181,12 @@ function StepperFormActions() {
 	);
 }
 
-function MyStepperFooter() {
+function MyStepperFooter({router}: {router: AppRouterInstance }) {
 	const { activeStep, resetSteps, steps } = useStepper();
 
 	if (activeStep !== steps.length) {
 		return null;
 	}
-	const router = useRouter();
 
 	return (
 		<div className="flex items-center justify-center gap-2 w-100 mt-8">
