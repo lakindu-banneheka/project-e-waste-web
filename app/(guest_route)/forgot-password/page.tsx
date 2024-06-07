@@ -15,6 +15,8 @@ import { InputOTPForm } from "@/components/InputOTPForm";
 import { BreadcrumbWithCustomSeparator } from "@/components/forgot-password/BreadcrumbWithCustomSeparator";
 import { Eye, EyeOff } from "lucide-react";
 import { Tabs } from "@/types/forgot-password-tabs";
+import { useMutation } from "@tanstack/react-query";
+import { sendOTPMail } from "@/server/emails/otp-mail";
 
 const FormEmailSchema = z.object({
     email: universityEmailSchema
@@ -36,6 +38,20 @@ const ForgotPassword = () => {
     const [tabsValues, setTabsValues] = useState<Tabs[]>([Tabs.EMAIL]);
     const [isTabActionDisabeled, setIsTabActionDisabeled] = useState<boolean>(false);
 
+    const { 
+        mutate: server_sendOTPMail,
+        isPending,
+    } = useMutation({
+        mutationFn: sendOTPMail,
+        onSuccess: () => {
+            toast.success(`One-time password has been sent to your email.`);
+            setTabsValues([...tabsValues, Tabs.OTP]);
+        },
+        onError(error, variables, context) {
+            toast.error(error.message);
+        },
+    })
+
     const email_form = useForm<z.infer<typeof FormEmailSchema>>({
         resolver: zodResolver(FormEmailSchema),
     });
@@ -45,20 +61,10 @@ const ForgotPassword = () => {
     });
 
     function onSubmitEmail(data: z.infer<typeof FormEmailSchema>) {
-        console.log(data.email);
         // send email 
-
-        // if ok
-        toast.message(`One-time password has been sent to your email,`,{
-            description: data.email
-        })
-        // setTabsValues(prev=>[...prev,Tabs.OTP])
-        const newTabVals = [...tabsValues, Tabs.OTP];
-        setTabsValues(newTabVals);
-
-
-        // else
-        // toast.error(`Something went wrong.`)
+        server_sendOTPMail({
+            to: 'kvpasindumalinda@gmail.com'
+        });
 
     }
 
