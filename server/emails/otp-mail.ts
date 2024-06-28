@@ -1,19 +1,27 @@
 'use server'
+import startDb from '@/lib/db';
+import OTPModel from '@/models/OTPModel';
+import { Base_OTPProps } from '@/types/OTP';
 import nodemailer from 'nodemailer';
+import { otpGen } from 'otp-gen-agent';
 
 interface OTPMAilProps {
-    to: string;
+    email: string;
+    subject?: string;
+    text?: string;
+    html?: string;
 }
 
 export const sendOTPMail = async ({
-    to
+    email,
+    subject,
+    text,
+    html
 }: OTPMAilProps) => {
     
-    // call otp generator function
-    const OTP: string = '123456'; 
-    
-    
-    const htmlbody = getHtmlBody({otp: OTP});
+    const otp = await otpGen();
+    const htmlbody = getHtmlBody({otp: otp});
+    try {
     
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -28,22 +36,29 @@ export const sendOTPMail = async ({
 
     const mailOptions = {
         from: process.env.NODEMAILER_EMAIL,
-        to: to,
+        to: email,
         subject: 'Sending Email using Node.js',
         text: 'That was easy!',
         html: htmlbody
     };
 
-    await transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-            console.log(error);
-        } else {
-            console.log(info.response);
-        }
-    });
+        await startDb();
+        const newOTP = await OTPModel.create({email: email, otp: otp});
+    
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(info.response);
+            }
+        });
+        
+    } catch (error) {
+        console.log(error);
+    }
+    
+
 }
-
-
 
 const getHtmlBody = ({otp}:{otp: string}) => {
 
@@ -93,4 +108,56 @@ const getHtmlBody = ({otp}:{otp: string}) => {
 
         </html>
     `)
+}
+
+
+// Verify Email 
+// export const verifyEmail = async ({
+//     email,
+//     otp
+// }: Base_OTPProps) => {
+
+//     try {
+//         await startDb();
+//         const otp_data = await OTPModel.findOne({email: email});
+//         console.log(otp_data);
+    
+//         if(otp_data && otp_data.otp === otp){
+//             await OTPModel.findOneAndUpdate({email: email}, {...otp_data, is_verified: true});
+//             return true;
+//         } else {
+//             throw new Error("Invalid OTP."); 
+//         }
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
+export const verifyEmail = async ({ email, otp }: Base_OTPProps) => {
+    try {
+        await startDb();
+        
+        const otpData = await OTPModel.findOne({ email: 'lakindu2001l@gmail.com' });
+        console.log(otpData);
+        if (!otpData) {
+            return new Error("Invalid OTP. test");
+        }
+
+        if (otpData.is_used) {
+            return new Error("OTP has already been used.");
+        }
+
+        console.log(otpData.otp, otp);
+        if (otpData.otp !== otp) {
+            return new Error("Invalid OTP.");
+        }
+        
+        otpData.is_used = true;
+        const result = await otpData.save();
+        
+        return result ? true : false;  // Return true if save is successful, otherwise false
+    } catch (error) {
+        console.error("Error verifying email:", error);
+        return false;
+    }
 }

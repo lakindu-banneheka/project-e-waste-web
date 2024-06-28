@@ -20,6 +20,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp"
 import { toast } from "@/components/ui/use-toast"
+import { useEffect, useState } from "react"
 
 const FormSchema = z.object({
   pin: z.string().min(6, {
@@ -32,9 +33,19 @@ interface InputOTPFormProps {
   formDescription?: string;
   buttonLabel?: string;
   otpVerification: ({pin}: {pin: string})=>void;
+  handleResendOTP: () => void;
+  isPending: boolean;
 }
 
-export function InputOTPForm({ label, buttonLabel, formDescription, otpVerification }: InputOTPFormProps) {
+export function InputOTPForm({ label, buttonLabel, formDescription, otpVerification, handleResendOTP, isPending }: InputOTPFormProps) {
+  const [isResendDisabled, setIsResendDisabled] = useState<boolean>(false);
+  
+  useEffect(()=> {
+    setTimeout(() => {
+      setIsResendDisabled(false);
+    }, 1000 * 60 * 2);
+  },[isResendDisabled]);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -52,6 +63,11 @@ export function InputOTPForm({ label, buttonLabel, formDescription, otpVerificat
       ),
     });
     otpVerification({pin: data.pin})
+  }
+
+  function onClickResendOTP() {
+    setIsResendDisabled(true);
+    handleResendOTP();
   }
 
   return (
@@ -85,8 +101,22 @@ export function InputOTPForm({ label, buttonLabel, formDescription, otpVerificat
             </FormItem>
           )}
         />
-
-        <Button type="submit">{ buttonLabel || `Submit`}</Button>
+        <div className="flex space-x-3" >
+          <Button 
+            type="button" 
+            variant='secondary'  
+            onClick={onClickResendOTP}
+            disabled={isResendDisabled}
+          >
+            {`Resend OTP`}
+          </Button>
+          <Button 
+            type="submit"
+            disabled={isPending}
+          >
+            { buttonLabel || `Submit`}
+          </Button>
+        </div>
       </form>
     </Form>
   )
