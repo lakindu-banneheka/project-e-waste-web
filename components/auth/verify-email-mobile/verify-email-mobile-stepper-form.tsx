@@ -97,11 +97,12 @@ function FirstStepForm({
 
 	return (
 		<div className="w-100" >
-			<InputOTPForm 
+			{/* <InputOTPForm
+
 				label="Email Verification OTP"
 				otpVerification={onSubmit}
 				formDescription={`OTP was sent to ${email}`}
-			/>
+			/> */}
 		</div>
 	);
 }
@@ -137,11 +138,11 @@ function SecondStepForm({
 
 	return (
 		<div className="w-100" >
-			<InputOTPForm 
+			{/* <InputOTPForm 
 				label="Phone Number Verification OTP"
 				otpVerification={onSubmit}
 				formDescription={`OTP was sent to ${phoneno}`}
-			/>
+			/> */}
 		</div>
 	);
 }
