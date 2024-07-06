@@ -7,14 +7,17 @@ import { ChevronDownIcon, User  } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 import { admin_menus, contributor_menus, Menu } from "./menus";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { UserRole } from "@/types/User";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 
 
 export function SidebarMenu() {
+    const router = useRouter();
     const pathname = usePathname();
     const { data } = useSession();
+    const isLoggedIn: boolean = data? true: false;
     const role = data?.user.role;
     let menus: Menu[] = [];
 
@@ -22,12 +25,19 @@ export function SidebarMenu() {
         menus = contributor_menus;
     } else if(role === UserRole.Admin) {
         menus = admin_menus;
-    }
+    };
+
     const uniqueLabels = Array.from(new Set(menus.map((menu) => menu.label)));
 
+    const handleLogout = async () => {
+        await signOut();
+        router.push('/auth/login');
+        router.refresh();
+    };
+
     return (
-        <ScrollArea className="h-screen lg:w-48 sm:w-full rounded-md">
-            <div className="md:px-4 sm:p-0 mt-5 ">
+        <ScrollArea className="h-full lg:w-48 sm:w-full rounded-md flex flex-col">
+            <div className="md:px-4 sm:p-0 mt-5 flex-grow">
                 {uniqueLabels.map((label, index) => (
                     <React.Fragment key={label}>
                         {label && (
@@ -81,6 +91,27 @@ export function SidebarMenu() {
                     </React.Fragment>
                 ))}
             </div>
+            { isLoggedIn
+                ?<div className="mt-auto p-3" >
+                    <Button 
+                        className="w-full" 
+                        variant={'secondary'} 
+                        onClick={handleLogout}
+                    >
+                        Logout
+                    </Button>
+                </div>
+                :<div className="flex justify-center items-center w-full p-3" >
+                    <Button 
+                        className="w-full" 
+                        variant={'secondary'} 
+                        onClick={()=> router.push('/auth/login')}
+                    >
+                        Login
+                    </Button>
+                </div>
+            }
+            
         </ScrollArea>
     );
 }

@@ -10,11 +10,8 @@ export default function Home() {
   return (
     <>
       <Header />
-      <div className="flex">
-        <div className="hidden md:block">
-            <SidebarMenu />
-        </div>
-        <div>test</div>
+      <div className="">
+        test
       </div>
     </>
   );
