@@ -17,6 +17,7 @@ import { admin_header_links, contributor_header_links, HeaderLink } from "./menu
 export const Header = () => {
   const router = useRouter();
   const { data } = useSession();
+  const isLoggedIn: boolean = data? true: false;
   const role = data?.user.role;
   let header_links: HeaderLink[] = [];
 
@@ -29,6 +30,7 @@ export const Header = () => {
   const handleLogout = async () => {
     await signOut();
     router.push('/auth/login');
+    router.refresh();
   };
 
     return (
@@ -45,8 +47,8 @@ export const Header = () => {
                   <span className="sr-only">Toggle navigation menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[240px]">
-                <SheetHeader>
+              <SheetContent side="left" className="w-[240px] h-full">
+                <SheetHeader className="h-full" >
                     <SheetTitle className='text-left text-xl font-bold ml-3'>
                       <Link
                         href="#"
@@ -61,7 +63,7 @@ export const Header = () => {
 
                       </Link>
                     </SheetTitle>
-                    <SheetDescription>
+                    <SheetDescription className="h-full" >
                         <SidebarMenu />
                     </SheetDescription>
                 </SheetHeader>
@@ -77,7 +79,6 @@ export const Header = () => {
                       alt="E-WASTE PROJECT LOGO"
                   />
               </div>
-
             </Link>
             <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
               <div className="ml-auto flex-1 sm:flex-initial">
@@ -94,21 +95,32 @@ export const Header = () => {
                 ))}
             </nav>
               <ModeToggle />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" size="icon" className="rounded-full">
-                    <CircleUser className="h-5 w-5" />
-                    <span className="sr-only">Toggle user menu</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={handleLogout}
+              { isLoggedIn
+                ? <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="secondary" size="icon" className="rounded-full">
+                        <CircleUser className="h-5 w-5" />
+                        <span className="sr-only">Toggle user menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                : <>
+                  <Button
+                    variant={'link'}
+                    onClick={()=>router.push('/auth/login')}
                   >
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    Login
+                  </Button>
+                </>
+              }
+              
             </div>
           </header>
         </>

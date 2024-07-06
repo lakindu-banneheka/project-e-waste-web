@@ -16,11 +16,11 @@ export default async function GestLayout ({ children }: Props) {
     return (
       <>
         <Header />
-        <div className="flex">
-          <div className="hidden md:block">
+        <div className="flex h-screen">
+          <div className="hidden md:block h-full">
               <SidebarMenu />
           </div>
-          <div>{children}</div>
+          <div>test</div>
         </div>
         
       </>
