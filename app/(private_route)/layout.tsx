@@ -20,7 +20,9 @@ export default async function GestLayout ({ children }: Props) {
           <div className="hidden md:block h-full">
               <SidebarMenu />
           </div>
-          <div>test</div>
+          <div>
+            {children}
+          </div>
         </div>
         
       </>
