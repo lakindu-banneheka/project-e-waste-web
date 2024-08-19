@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { ChevronDownIcon, User  } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
-import { admin_menus, contributor_menus, Menu } from "./menus";
+import { admin_menus, contributor_menus, doesPathnameContainMenuHref, Menu } from "./menus";
 import { signOut, useSession } from "next-auth/react";
 import { UserRole } from "@/types/User";
 import { usePathname, useRouter } from "next/navigation";
@@ -58,7 +58,7 @@ export function SidebarMenu() {
                                         >
                                             <AccordionItem value="item-1" className="m-0 p-0 font-normal">
                                                 <AccordionTrigger>
-                                                    <a key={menu.name} className={`w-full flex justify-start text-xs font-normal h-10 bg-background my-2 items-center p-4 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-background rounded-md ${pathname === menu.href?'bg-primary dark:bg-primary':''}`}>
+                                                    <a key={menu.name} className={`w-full flex justify-start text-xs font-normal h-10 bg-background my-2 items-center p-4 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-background rounded-md ${doesPathnameContainMenuHref({pathname, menuHref: menu.href})?'bg-primary dark:bg-primary dark:text-black text-white font-bold':''}`}>
                                                         <div className={cn("flex justify-between w-full [&[data-state=open]>svg]:rotate-180")}>
                                                             <div className="flex">
                                                                 <div className="w-6">{menu.icon}</div>
@@ -70,7 +70,7 @@ export function SidebarMenu() {
                                                 </AccordionTrigger>
                                                 <AccordionContent>
                                                     {menu.submenu.map((submenu) => (
-                                                        <Link key={submenu.name} href={submenu.href} className={`text-gray-400 mt-0 mb-0 flex text-xs h-10 bg-white dark:bg-background dark:hover:bg-primary dark:hover:text-background my-2 items-center p-4 hover:bg-primary hover:text-white rounded-md ${pathname === menu.href?'bg-primary dark:bg-primary':''}`}>
+                                                        <Link key={submenu.name} href={submenu.href} className={`text-gray-400 mt-0 mb-0 flex text-xs h-10 bg-white dark:bg-background dark:hover:bg-primary dark:hover:text-background my-2 items-center p-4 hover:bg-primary hover:text-white rounded-md ${doesPathnameContainMenuHref({pathname, menuHref: menu.href})?'bg-primary dark:bg-primary dark:text-black text-white font-bold':''}`}>
                                                             <div className="w-6">{submenu.icon}</div>
                                                             {submenu.name}
                                                         </Link>
@@ -80,7 +80,7 @@ export function SidebarMenu() {
                                         </Accordion>
                                     ) : (
                                         <div key={menu.name}>
-                                            <Link href={menu.href} className={`flex text-xs h-10 dark:bg-background my-2 items-center p-4 hover:bg-primary dark:hover:bg-primary dark:hover:text-background hover:text-white rounded-md ${pathname === menu.href?'bg-primary dark:bg-primary':'bg-white'}`}>
+                                            <Link href={menu.href} className={`flex text-xs h-10 dark:bg-background my-2 items-center p-4 hover:bg-primary dark:hover:bg-primary dark:hover:text-background hover:text-white rounded-md ${doesPathnameContainMenuHref({pathname, menuHref: menu.href})?'bg-primary dark:bg-primary dark:text-black text-white font-bold':'bg-white'}`}>
                                                 <div className="w-6">{menu.icon}</div>
                                                 {menu.name}
                                             </Link>

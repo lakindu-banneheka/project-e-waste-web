@@ -14,6 +14,14 @@ export type Submenu = {
     href: string
 }
 
+export const doesPathnameContainMenuHref = ({pathname, menuHref}: {
+    pathname: string, 
+    menuHref: string
+  }): boolean => {
+    return pathname.includes(menuHref);
+  };
+
+
 export const admin_menus: Menu[] = [
     {
         label: "",
@@ -47,15 +55,15 @@ export const admin_menus: Menu[] = [
     },
     {
         label: "E-Waste",
-        name: "E-Waste Units",
+        name: "Inventory",
         icon: <Heater size={15} className="mr-2" />,
-        href: "/e-waste/units",
+        href: "/e-waste/inventory",
     },
     {
         label: "E-Waste",
-        name: "E-Waste Items",
+        name: "Recovered Items",
         icon: <CircuitBoard size={15} className="mr-2" />,
-        href: "/e-waste/items",
+        href: "/e-waste/recovered-items",
     },
     {
         label: "E-Waste",
@@ -92,15 +100,15 @@ export const contributor_menus: Menu[] = [
     },
     {
         label: "E-Waste",
-        name: "E-Waste Units",
+        name: "Inventory",
         icon: <Heater size={15} className="mr-2" />,
-        href: "/e-waste/units",
+        href: "/e-waste/inventory",
     },
     {
         label: "E-Waste",
-        name: "E-Waste Items",
+        name: "Recovered Items",
         icon: <CircuitBoard size={15} className="mr-2" />,
-        href: "/e-waste/items",
+        href: "/e-waste/recovered-items",
     },
 ];
 

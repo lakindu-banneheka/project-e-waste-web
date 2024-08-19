@@ -7,6 +7,11 @@ interface CreateUserReq extends BasicUser {
     password: string;
 }
 
+interface resUser extends BasicUser {
+    _id: string;
+    password: string;
+}
+
 export const createUser = async ({user}: {user: CreateUserReq}) => {
 
     await startDb();
@@ -24,4 +29,17 @@ export const createUser = async ({user}: {user: CreateUserReq}) => {
         is_email_verified: newUser.is_email_verified,
         is_phoneno_verified: newUser.is_phoneno_verified
     }
+}
+
+export const getAllAdmins_name_id = async () => {
+    await startDb();
+
+    const res: resUser[] = await UserModel.find({role: 'admin'}).lean();
+    
+    const admin_name_id = res.map(item => ({
+        _id: item._id.toString(),
+        name: item.firstName + " " + item.lastName
+    }));
+
+    return admin_name_id;
 }

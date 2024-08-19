@@ -72,7 +72,7 @@ const Login = () => {
         onError(error, variables, context) {
             toast.error(error.message);
         },
-    })
+    });
 
     useEffect(() => {
         setValue('isTermsAccepted', watch('isTermsAccepted'), { shouldValidate: true });
