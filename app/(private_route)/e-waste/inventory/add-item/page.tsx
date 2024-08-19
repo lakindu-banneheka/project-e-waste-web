@@ -54,7 +54,7 @@ const FormSchema = z.object({
     })
 })
 
-const addNewInventoryItem = () => {
+const AddNewInventoryItem = () => {
     const { data } = useSession();
     const user_id = data?.user._id || "";
     ring.register();
@@ -304,4 +304,4 @@ const addNewInventoryItem = () => {
     )
 }
 
-export default addNewInventoryItem;
+export default AddNewInventoryItem;
