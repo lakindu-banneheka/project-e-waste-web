@@ -28,7 +28,7 @@ import { useSession } from "next-auth/react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EWasteInventoryCondition, EWasteInventoryType } from "@/types/EWasteInventory";
 import { getAllAdmins_name_id } from "@/server/user";
-import { ring } from 'ldrs';
+// import { ring } from 'ldrs';
 // import { isDarkMode } from "@/lib/theme";
 
 
@@ -57,7 +57,7 @@ const FormSchema = z.object({
 const AddNewInventoryItem = () => {
     const { data } = useSession();
     const user_id = data?.user._id || "";
-    ring.register();
+    // ring.register();
 
     const router = useRouter();
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -285,13 +285,13 @@ const AddNewInventoryItem = () => {
                 }
                 { isPending && 
                     <>
-                        <l-ring
+                        {/* <l-ring
                             size="16"
                             stroke="2"
                             bg-opacity="0"
                             speed="2" 
                             color={'white'}
-                        ></l-ring>
+                        ></l-ring> */}
                         <p className="pl-3 text-white" >
                             Adding...
                         </p>
