@@ -36,7 +36,7 @@ export function SidebarMenu() {
     };
 
     return (
-        <ScrollArea className="h-full lg:w-48 sm:w-full rounded-md flex flex-col">
+        <ScrollArea className="h-full lg:w-48 sm:w-full rounded-md flex flex-col fixed">
             <div className="md:px-4 sm:p-0 mt-5 flex-grow">
                 {uniqueLabels.map((label, index) => (
                     <React.Fragment key={label}>

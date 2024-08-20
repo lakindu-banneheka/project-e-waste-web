@@ -27,6 +27,8 @@ export interface EWasteInventory_Base {
 
 export interface EWasteInventory extends EWasteInventory_Base {
     _id: string;
+    createdAt: Date,
+    updatedAt: Date
 }
 
 // Id

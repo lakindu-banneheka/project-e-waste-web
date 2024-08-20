@@ -156,7 +156,7 @@ export default function DataTableDemo() {
           <TableBody>
             { isPending &&                      // for skeleton when loading (loading animation)
               table.getHeaderGroups().map((headerGroup) => ( 
-                tableLoadingAnimation({noOfCols: headerGroup.headers.length, noOfRows: 5})
+                tableLoadingAnimation({noOfCols: headerGroup.headers.length, noOfRows: 10})
               ))                 
             }
             {table.getRowModel().rows?.length ? (

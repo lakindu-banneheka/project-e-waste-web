@@ -103,12 +103,12 @@ export const columns: ColumnDef<EWasteInventory>[] = [
         accessorKey: "receivedDate",
         header: () => <div className="text-left">receivedDate</div>,
         cell: ({ row }) => {
-            const receivedDate = row.getValue("receivedDate")
+            const receivedDate: Date = row.getValue("receivedDate")
 
-            // const formattedDate = formatDate(receivedDate);
+            const formattedDate = formatDate(receivedDate);
     
             return <div className="text-left font-medium">
-                {/* {formattedDate} */}
+                {formattedDate}
             </div>
         },
     },
@@ -137,7 +137,7 @@ export const columns: ColumnDef<EWasteInventory>[] = [
               {/* <DropdownMenuItem>View customer</DropdownMenuItem> */}
               <DropdownMenuItem>
                 <Link
-                    href={`/e-waste/units/${unit._id}`}
+                    href={`/e-waste/inventory/${unit._id}`}
                 >
                     View item details
                 </Link>

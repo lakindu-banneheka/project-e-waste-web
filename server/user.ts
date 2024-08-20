@@ -43,3 +43,11 @@ export const getAllAdmins_name_id = async () => {
 
     return admin_name_id;
 }
+
+export const getUserNameById = async ({_id}:{_id: string}) => {
+    await startDb();
+
+    const res: (resUser | null) = await UserModel.findById(_id);
+
+    return res?.firstName + " " + res?.lastName;
+}
