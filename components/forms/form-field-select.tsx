@@ -1,0 +1,80 @@
+import React from "react";
+import { Control, FieldPath, FieldValues, Controller } from "react-hook-form";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Skeleton } from "../ui/skeleton";
+
+interface FormFieldSelectProps<TFieldValues extends FieldValues> {
+  control: Control<TFieldValues>;
+  name: FieldPath<TFieldValues>;
+  label: string;
+  placeholder: string;
+  options: Array<{ value: string; label: string }>;
+  disabled?: boolean;
+  className?: string;
+  isLoading?: boolean;
+  isLoadingOptions?: boolean;
+}
+
+export const FormFieldSelect = <TFieldValues extends FieldValues>({
+  control,
+  name,
+  label,
+  placeholder,
+  options,
+  disabled = false,
+  isLoading=false,
+  isLoadingOptions=false,
+  className,
+}: FormFieldSelectProps<TFieldValues>) => {
+  return (
+    <FormItem className={className}>
+      <div className="flex flex-row items-start justify-start">
+        <FormLabel className="mt-2 mr-5 w-28 min-w-28">{label}</FormLabel>
+        { isLoading &&
+          <Skeleton className="w-full h-10" />
+        }
+        { !isLoading &&
+          <Controller
+            control={control}
+            name={name}
+            render={({ field }) => (
+              <Select
+                disabled={disabled}
+                {...field}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full min-w-[210px]">
+                    <SelectValue placeholder={placeholder} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  { isLoadingOptions &&
+                      Array(2).fill(null).map((_, index) => (
+                        <Skeleton key={index} className="w-full h-8 mb-2" />
+                      ))
+                  }
+                  {!isLoadingOptions && options.map((option, index) => (
+                    <SelectItem key={index} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        }
+      </div>
+      <FormMessage className="ml-32" />
+    </FormItem>
+  );
+};
+
+// How to Use
+{/* <FormFieldSelect<typeof FormSchema>
+  control={form.control}
+  name="acceptedPerson"
+  label="Accepted Person"
+  placeholder="Select the e-waste batch accepted person"
+  options={getAdminData.data?.map(admin => ({ value: admin._id, label: admin.name })) || []}
+/> */}
