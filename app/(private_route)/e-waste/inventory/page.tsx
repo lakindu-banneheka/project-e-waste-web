@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -13,16 +12,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -32,13 +23,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { columns } from "./columns";
-import { EWasteInventory, EWasteInventoryCondition, EWasteInventoryType } from "@/types/EWasteInventory"
-import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
-import { createNewInventoryItem, getAllInventoryItems, Res_InventoryItem } from "@/server/inventory"
-import { Skeleton } from "@/components/ui/skeleton"
+import { getAllInventoryItems } from "@/server/inventory"
 import { tableLoadingAnimation } from "@/components/loading-skeletons/table-loading-skeleton"
 import { useRouter } from "next/navigation"
+import { SearchFilterComponent } from "@/components/search-filter"
 
 export default function DataTableDemo() {
 
@@ -80,7 +70,7 @@ export default function DataTableDemo() {
   });
 
   if(error){
-    toast.error("Something went wrong. Please refresh the page.");
+    toast.error("Something went wrong. The inventory can't be loaded. Please refresh the page.");
   }
 
   return (
@@ -88,52 +78,21 @@ export default function DataTableDemo() {
       <div className="flex items-center justify-between py-4">
         <div>
           <Button 
-            className="text-black dark:text-white font-normal" 
+            className="text-black dark:text-white font-normal mr-5" 
             onClick={()=>{
               router.replace('/e-waste/inventory/add-item')
             }}
           >
-            Add New Item
+            Add Item
           </Button>
         </div>
-        <div className="flex space-x-4" >
-          <Input
-            placeholder="Filter..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
+        <div >
+          <SearchFilterComponent 
+            table={table}
           />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                Columns <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border w-full">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -212,6 +171,7 @@ export default function DataTableDemo() {
           </Button>
         </div>
       </div>
+      <div className="h-14" ></div>
     </div>
   )
 }

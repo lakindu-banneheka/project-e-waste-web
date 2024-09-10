@@ -29,7 +29,7 @@ const FormFieldInput = <TFieldValues extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem className={className}>
-          <div className="flex flex-row items-start justify-start">
+          <div className="flex flex-col space-y-3 md:space-y-0 w-10/12 md:flex-row items-start justify-start">
             <FormLabel className="mt-2 mr-5 w-28 min-w-28">{label}</FormLabel>
             { isLoading &&
                 <Skeleton className="w-full h-10" />

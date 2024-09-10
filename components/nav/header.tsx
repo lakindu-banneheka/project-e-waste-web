@@ -35,7 +35,7 @@ export const Header = () => {
 
     return (
         <>
-          <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-10">
+          <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-10 min-w-[480px]">
             <Sheet>
               <SheetTrigger asChild className="md:hidden" >
                 <Button
