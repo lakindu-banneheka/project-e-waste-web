@@ -20,13 +20,19 @@ export const createNewInventoryItem = async ({inventoryItem}: {inventoryItem: Cr
 };
 
 export const getAllInventoryItems = async (): Promise<Res_InventoryItem[]> => {
-    await startDb();
-    const res: Res_InventoryItem[] = await InventoryModel.find({}).lean();
-    const inventoryItems = res.map(item => ({
-        ...item,
-        _id: item._id.toString(),
-    }));
-    return inventoryItems as Res_InventoryItem[];
+    try {
+        await startDb();
+        const res: Res_InventoryItem[] = await InventoryModel.find({}).lean();
+        const inventoryItems = res.map(item => ({
+            ...item,
+            _id: item._id.toString(),
+        }));
+        return inventoryItems as Res_InventoryItem[];
+    } catch (error) {
+        console.error('Error finding inventory items:', error);
+        throw new Error(`Failed to find inventory items`);
+    }
+    
 }
 
 export const getInventoryItemById = async ({id}: {id:String}) => {
@@ -52,7 +58,7 @@ export const updateInventoryItemById = async ({ item }: { item: EWasteInventory 
         if (!res) {
             throw new Error(`Inventory item with ID ${item._id} not found.`);
         }
-        return res._id;
+        return JSON.stringify(res._id);
     } catch (error) {
         console.error('Error updating inventory item:', error);
         throw new Error(`Failed to update inventory item`);
@@ -66,7 +72,7 @@ export const deleteInventoryItemById = async ({ id }: { id: string }) => {
         if (!res) {
             throw new Error(`Inventory item with ID ${id} not found.`);
         }
-        return res._id;
+        return JSON.stringify(res._id);
     } catch (error) {
         console.error('Error deleting inventory item:', error);
         throw new Error(`Failed to delete inventory item`);

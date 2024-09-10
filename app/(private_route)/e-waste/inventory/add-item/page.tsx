@@ -162,6 +162,7 @@ const AddNewInventoryItem = () => {
                     </Button>
                 </form>
             </Form>
+            <div className="h-14" ></div>
         </div>
     )
 }

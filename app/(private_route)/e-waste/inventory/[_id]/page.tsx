@@ -17,6 +17,8 @@ import FormFieldInput from "@/components/forms/form-field-input";
 import { FormFieldTextarea } from "@/components/forms/form-field-textarea";
 import { FormFieldSimpleDatePicker } from "@/components/forms/form-field-datepicker";
 import { FormFieldSelect } from "@/components/forms/form-field-select";
+import { X } from "lucide-react";
+import { ConfirmationDialog } from "@/components/custom-dialogs/confirmation-dialog";
 
 const FormSchema = z.object({
     _id: z.string().regex(/^[a-f\d]{24}$/i, {
@@ -61,7 +63,7 @@ const EWasteUnitDetails = () => {
     const getInventoryItemDataById = useMutation({
         mutationFn: getInventoryItemById,
         onError(error, variables, context) {
-            toast.error("Something went wrong.");
+            toast.error("Something went wrong. When getting item data");
         },
     });
     const { mutate: server_getInventoryItemById } = getInventoryItemDataById;
@@ -77,7 +79,7 @@ const EWasteUnitDetails = () => {
     const getAdminData = useMutation({
         mutationFn: getAllAdmins_name_id,
         onError(error, variables, context) {
-            toast.error("Something went wrong.");
+            toast.error("Something went wrong. When getting admin data");
         },
     });
 
@@ -103,11 +105,32 @@ const EWasteUnitDetails = () => {
         }
     },[getInventoryItemDataById.isSuccess]);
 
+    // Default values setting - select Fields
     useEffect(()=> {
         if(get_UserNameById.data){
             form.setValue("enteredBy", (get_UserNameById.data));
         }
-    },[get_UserNameById.isSuccess]);
+        if(inventoryItemData){
+            form.setValue("condition", inventoryItemData.condition);
+            form.setValue("type", inventoryItemData.type);
+        }
+    },[get_UserNameById.isSuccess, inventoryItemData]);
+
+    // Default values setting - Text Fields
+    useEffect(() => {
+        if (inventoryItemData) {
+            form.reset({
+                _id: inventoryItemData._id,
+                name: inventoryItemData.name,
+                source: inventoryItemData.source,
+                receivedDate: inventoryItemData.receivedDate,
+                description: inventoryItemData.description,
+                acceptedPerson: inventoryItemData.acceptedPerson,
+                createdAt: inventoryItemData.createdAt,
+                updatedAt: inventoryItemData.updatedAt
+            });
+        }
+    }, [inventoryItemData]);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -119,29 +142,10 @@ const EWasteUnitDetails = () => {
         },
     });
 
-    useEffect(() => {
-        if (inventoryItemData) {
-          form.reset({
-            _id: inventoryItemData._id,
-            name: inventoryItemData.name,
-            source: inventoryItemData.source,
-            receivedDate: inventoryItemData.receivedDate,
-            description: inventoryItemData.description,
-            acceptedPerson: inventoryItemData.acceptedPerson,
-            condition: inventoryItemData.condition,
-            type: inventoryItemData.type,
-            // enteredBy: get_UserNameById.data,
-            createdAt: inventoryItemData.createdAt,
-            updatedAt: inventoryItemData.updatedAt
-          });
-        }
-      }, [inventoryItemData]);
-
-
     const update_InventoryItemById = useMutation({
         mutationFn: updateInventoryItemById,
         onError(error, variables, context) {
-            toast.error("Something went wrong.");
+            toast.error("Something went wrong. When updating items");
         },
         onSuccess() {
             if(typeof(_id) == 'string'){
@@ -153,10 +157,10 @@ const EWasteUnitDetails = () => {
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
         const inventoryItem = {...data, failureReason: [], enteredBy: user_id}
-        server_updateInventoryItemById({item: inventoryItem})
+        server_updateInventoryItemById({item: inventoryItem});
         form.reset();
+        setIsEditingState(false);
     }
-
 
     const delete_InventoryItemById = useMutation({
         mutationFn: deleteInventoryItemById,
@@ -165,12 +169,13 @@ const EWasteUnitDetails = () => {
         },
         onSuccess() {
             if(typeof(_id) == 'string'){
-                server_getInventoryItemById({id: _id});
+                // server_getInventoryItemById({id: _id});
+                router.push('/e-waste/inventory');
+                toast.success("Inventory Item successfully deleted.");
             }
         }
     });
     const { mutate: server_deleteInventoryItemById } = delete_InventoryItemById;
-    
 
     function onDelete() {
         if(typeof(_id) == 'string'){
@@ -183,11 +188,21 @@ const EWasteUnitDetails = () => {
     
     return (
         <>
-            <div className="flex flex-col space-y-10 items-center mt-5" >
-                <div className="w-full" >
+            <div className="flex flex-col space-y-10 items-center mt-5 mx-5 w-full" >
+                <div className="w-10/12 flex items-center justify-between" >
                     <h1 className="font-semibold text-2xl text-primary" >
                         Inverntory Item Details
                     </h1>
+                    <Button 
+                        variant="outline" 
+                        className="rounded-full border-none" 
+                        size="icon"
+                        onClick={ () =>
+                            router.push('/e-waste/inventory')
+                        }    
+                    >
+                        <X className="h-5 w-5" />
+                    </Button>
                 </div>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="w-10/12 space-y-6">
@@ -283,7 +298,6 @@ const EWasteUnitDetails = () => {
                         <div className="mt-12" ></div>
                         <div className="flex flex-row justify-start items-center space-x-5" >
                             <>
-                            
                                 { !isEditingState &&
                                     <Button 
                                         variant={'default'} 
@@ -311,33 +325,25 @@ const EWasteUnitDetails = () => {
                                             "Updating..."
                                         }    
                                     </Button>
-
                                 }
                             </>  
-                            <Button 
-                                variant={'destructive'} 
-                                className=" " 
-                                type={"button"}   
-                                onClick={(e)=>{
-                                    e.preventDefault();
-                                    if(user_role == UserRole.Admin){
-                                        onDelete();
-                                    } else {
-                                        toast.error("You have to be an admin to delete items.")
-                                    }
-                                }}    
-                            >
-                                { !delete_InventoryItemById.isPending &&
-                                    "Delete"
+                            
+                            <ConfirmationDialog 
+                                triggerBtnLable="Delete"
+                                confirmationTopic="Do you want to delete this item ?"
+                                confirmationDescription="This action cannot be undone. This will permanently delete item data from our servers."
+                                confirmBtnLable={
+                                    !delete_InventoryItemById.isPending ? "Delete" : "Deleting..."
                                 }
-                                { delete_InventoryItemById.isPending && 
-                                    "Deleting..."
-                                }    
-                            </Button>
+                                confirmBtnVarient="destructive"
+                                triggerBtnVarient={'destructive'}
+                                onConfirm={onDelete}
+                                disabled={user_role != UserRole.Admin}
+                            />
                         </div>
                     </form>
                 </Form>
-                <div className="mt-14" ></div>
+                <div className="h-14" ></div>
             </div>
         </>
     );
