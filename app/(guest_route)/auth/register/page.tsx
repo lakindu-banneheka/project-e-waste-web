@@ -1,7 +1,5 @@
 'use client'
-import Image from "next/image"
 import Link from "next/link"
-import logo from '@/assets/logo/ewaste_logo 1.png';
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -18,6 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/server/user";
+import LogoImage from "@/assets/logo/logo";
 
 const schema = z.object({
     role: userRoleSchema,
@@ -98,8 +97,7 @@ const Login = () => {
                     <div className="mx-auto grid w-[350px] gap-6">
                         <div className="grid gap-2 w-full" >
                             <div className="flex justify-center w-full items-center" >
-                                <Image
-                                    src={logo}
+                                <LogoImage
                                     alt="Image"
                                     width="200"
                                     height="80" 

@@ -1,18 +1,16 @@
 'use client'
-import { CircleUser, Menu, Package2, Search } from "lucide-react"
+import { CircleUser, Menu } from "lucide-react"
 import Link from "next/link"
 import { Button } from "../ui/button"
-import { Input } from "../ui/input"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet"
 import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
-import logo from '@/assets/logo/ewaste_logo 1.png';
 import { SidebarMenu } from "./sidebar"
 import { ModeToggle } from "../theme/theme-toggle"
 import { UserRole } from "@/types/User"
 import { admin_header_links, contributor_header_links, HeaderLink } from "./menus"
+import LogoImage from "@/assets/logo/logo"
 
 export const Header = () => {
   const router = useRouter();
@@ -55,8 +53,7 @@ export const Header = () => {
                         className="flex items-center gap-2 text-lg font-semibold md:text-base"
                       >
                         <div className="flex justify-center w-36 items-center" >
-                            <Image
-                                src={logo}
+                            <LogoImage
                                 alt="E-WASTE PROJECT LOGO"
                             />
                         </div>
@@ -74,10 +71,9 @@ export const Header = () => {
               className="flex items-center gap-2 text-lg font-semibold md:text-base"
             >
               <div className="flex justify-center w-36 items-center" >
-                  <Image
-                      src={logo}
-                      alt="E-WASTE PROJECT LOGO"
-                  />
+                <LogoImage
+                    alt="E-WASTE PROJECT LOGO"
+                />
               </div>
             </Link>
             <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
