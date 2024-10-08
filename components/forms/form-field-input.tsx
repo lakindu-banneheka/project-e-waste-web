@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { InputHTMLAttributes } from 'react';
 import { Control, FieldValues, FieldPath } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import { Input } from '../ui/input';
@@ -12,6 +12,7 @@ interface FormFieldInputProps<TFieldValues extends FieldValues> {
   disabled?: boolean;
   className?: string;
   isLoading?: boolean;
+  type?: React.HTMLInputTypeAttribute | undefined
 }
 
 const FormFieldInput = <TFieldValues extends FieldValues>({
@@ -22,6 +23,7 @@ const FormFieldInput = <TFieldValues extends FieldValues>({
   disabled=false,
   isLoading=false,
   className,
+  type
 }: FormFieldInputProps<TFieldValues>) => {
   return (
     <FormField
@@ -41,6 +43,7 @@ const FormFieldInput = <TFieldValues extends FieldValues>({
                   {...field}
                   className="w-full min-w-[210px]"
                   disabled={disabled}
+                  type={type}
                 />
               </FormControl>
             }

@@ -17,6 +17,8 @@ interface FormFieldSimpleDatePickerProps<TFieldValues extends FieldValues> {
     disabled?: boolean;
     className?: string;
     isLoading?: boolean;
+    calStartDate?: Date;
+    calEndDate?: Date;
 }
 
 export const FormFieldSimpleDatePicker = <TFiTFieldValues extends FieldValues>({
@@ -26,6 +28,8 @@ export const FormFieldSimpleDatePicker = <TFiTFieldValues extends FieldValues>({
     placeholder,
     disabled=false,
     isLoading=false,
+    calEndDate=new Date(),
+    calStartDate=new Date("1900-01-01"),
     className,
 }: FormFieldSimpleDatePickerProps<TFiTFieldValues>) => {
     return(
@@ -65,7 +69,7 @@ export const FormFieldSimpleDatePicker = <TFiTFieldValues extends FieldValues>({
                                         selected={field.value}
                                         onSelect={field.onChange}
                                         disabled={(date) =>
-                                            date > new Date() || date < new Date("1900-01-01")
+                                            date > calEndDate || date < calStartDate
                                         }
                                         initialFocus
                                     />
