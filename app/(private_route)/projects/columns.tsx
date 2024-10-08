@@ -11,33 +11,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EWasteInventory } from "@/types/EWasteInventory";
 import Link from "next/link";
-import { formatDate } from "@/utils/dateUtils";
+import { Project } from "@/types/project";
 
-export const columns: ColumnDef<EWasteInventory>[] = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+export const columns: ColumnDef<Project>[] = [
+    // {
+    //   id: "select",
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={
+    //         table.getIsAllPageRowsSelected() ||
+    //         (table.getIsSomePageRowsSelected() && "indeterminate")
+    //       }
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}
+    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
         accessorKey: "name",
         header: ({ column }) => {
@@ -55,70 +54,71 @@ export const columns: ColumnDef<EWasteInventory>[] = [
         cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
       },
     {
-      accessorKey: "type",
+      accessorKey: "status",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Type
+            Status
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
       },
-      cell: ({ row }) => <div className="lowercase">{row.getValue("type")}</div>,
+      cell: ({ row }) => <div className="lowercase">{row.getValue("status")}</div>,
     },
     {
-        accessorKey: "source",
+        accessorKey: "progress",
         header: ({ column }) => {
           return (
             <Button
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-              Source
+              Progress
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("source")}</div>,
+        cell: ({ row }) => <div className="lowercase">{row.getValue("progress")}</div>,
     },
     {
-        accessorKey: "condition",
+        accessorKey: "manager",
         header: ({ column }) => {
           return (
             <Button
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-              Condition
+              Manager
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("condition")}</div>,
+        cell: ({ row }) => <div className="lowercase">{row.getValue("manager")}</div>,
     },
     {
-        accessorKey: "receivedDate",
+        accessorKey: "members",
         header: ({ column }) => {
           return (
             <Button
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-              Received Date
+              Members
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
         },
         cell: ({ row }) => {
-            const receivedDate: Date = row.getValue("receivedDate")
-
-            const formattedDate = formatDate(receivedDate);
+            const totalMemberCount: Number = row.getValue("memberCount");
+            const currentMembers: string[] = row.getValue("members");
+            const currentMemberCount = currentMembers.length;
+            const memberString = `${currentMemberCount} / ${totalMemberCount}`
     
             return <div className="text-left font-medium">
-                {formattedDate}
+                {memberString}
             </div>
         },
     },
@@ -141,15 +141,15 @@ export const columns: ColumnDef<EWasteInventory>[] = [
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(unit._id)}
               >
-                Copy item ID
+                Copy project ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               {/* <DropdownMenuItem>View customer</DropdownMenuItem> */}
               <DropdownMenuItem>
                 <Link
-                    href={`/e-waste/inventory/${unit._id}`}
+                    href={`/e-waste/projects/${unit._id}`}
                 >
-                    View item details
+                    View project details
                 </Link>
             </DropdownMenuItem>
             </DropdownMenuContent>

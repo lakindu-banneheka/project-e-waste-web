@@ -3,25 +3,25 @@ import * as React from "react"
 import { columns } from "./columns";
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
-import { getAllInventoryItems } from "@/server/inventory"
 import { useRouter } from "next/navigation"
 import { DataTable } from "@/components/data-table"
+import { getAllProjects } from "@/server/project";
 
 
 const ViewProjectList = () => {
     const router = useRouter();
 
     const { 
-      mutate: server_getAllInventoryItems,
+      mutate: server_getAllProjects,
       data,
       isPending,
       error
     } = useMutation({
-      mutationFn: getAllInventoryItems,
+      mutationFn: getAllProjects,
     });
   
     React.useEffect(() => {
-      server_getAllInventoryItems();
+        server_getAllProjects();
     }, []);
 
     
