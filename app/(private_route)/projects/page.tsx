@@ -28,7 +28,7 @@ const ViewProjectList = () => {
     const buttonDetails = {
         name: "New Project",
         onClick: () => {
-            router.replace('/e-waste/projects/add-project');
+            router.replace('/projects/create');
         },
     };
   
@@ -37,7 +37,7 @@ const ViewProjectList = () => {
     }
     return (
         <div className="w-full">
-            <DataTable 
+            <DataTable
                 columns={columns}
                 data={data??[]}
                 isPending={isPending}

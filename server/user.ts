@@ -1,7 +1,7 @@
 'use server'
 import startDb from "@/lib/db";
 import UserModel from "@/models/UserModel";
-import { BasicUser, UserRole } from "@/types/User"
+import { BasicUser, User, UserRole } from "@/types/User"
 
 interface CreateUserReq extends BasicUser {
     password: string;
@@ -50,4 +50,29 @@ export const getUserNameById = async ({_id}:{_id: string}) => {
     const res: (resUser | null) = await UserModel.findById(_id);
 
     return res?.firstName + " " + res?.lastName;
+}
+
+
+interface res_basicUser extends BasicUser {
+    _id: string;
+}
+
+export const getAllUsers = async (): Promise<User[] | undefined> => {
+    
+    try {
+        await startDb();
+        const res: res_basicUser[] = await UserModel.find({}).lean();
+        if(!res){
+            throw new Error('Failed to find Projects.');
+        }
+        const projects = res.map(item => ({
+            ...item,
+            _id: item._id.toString(),
+        }));
+
+        return projects as res_basicUser[];
+
+    } catch (error) {
+       console.error('Failed to find Projects: ', error);
+    }
 }

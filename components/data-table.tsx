@@ -35,6 +35,9 @@ interface DataTableProps<TData, TValue> {
     name: string;
     onClick: () => void;
   }
+  filterOrientation?: 'left' | 'right';
+  setSelectedRowIds?: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedUserIds?: string[];
 }
 
 export function DataTable<TData, TValue>({
@@ -42,13 +45,15 @@ export function DataTable<TData, TValue>({
   data,
   isPending,
   buttonDetails,
+  filterOrientation='right',
+  setSelectedRowIds,
+  selectedUserIds,
 }: DataTableProps<TData, TValue>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-
 
   const table = useReactTable({
     data,
@@ -69,9 +74,42 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  // Monitor row selection changes
+  React.useEffect(() => {
+    const selectedRows = table.getSelectedRowModel().rows.map(row => row.original);
+    const selectedRowIds = selectedRows.map((row) => (row as { _id: string })._id); // Assert type
+    setSelectedRowIds!=undefined?setSelectedRowIds(selectedRowIds):null;
+  }, [rowSelection]);
+
+  // React.useEffect(() => {
+  //   // update the rows
+
+  // },[selectedUserIds]);
+
+  // Update rowSelection based on selectedUserIds array
+React.useEffect(() => {
+  console.log('123 run')
+  if (selectedUserIds && selectedUserIds.length > 0) {
+    // Calculate rows to be selected based on selectedUserIds
+    const updatedSelection: Record<string, boolean> = {};
+
+    data.forEach((row, index) => {
+      const rowId = (row as { _id: string })._id; // Ensure _id exists
+      if (selectedUserIds.includes(rowId)) {
+        updatedSelection[index] = true; // Select rows not in selectedUserIds
+      }
+    });
+
+    setRowSelection(updatedSelection); // Update the rowSelection state with the filtered IDs
+  } else {
+    setRowSelection({}); // Clear selection if no selectedUserIds
+  }
+}, []);
+
+
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between py-4">
+      <div className="flex items-center justify-between py-4 px-3">
         { buttonDetails
           ? <Button
               className="text-black dark:text-white font-normal mr-5" 
@@ -79,9 +117,8 @@ export function DataTable<TData, TValue>({
             >
               {buttonDetails.name || ""}
             </Button>
-          : <div></div>
+          : filterOrientation=='right'?<div></div>:<></>
         }
-
         <SearchFilterComponent
             table={table}
         />
@@ -109,7 +146,7 @@ export function DataTable<TData, TValue>({
             <TableBody>
                 { isPending &&                      // for skeleton when loading (loading animation)
                 table.getHeaderGroups().map((headerGroup) => ( 
-                    tableLoadingAnimation({noOfCols: headerGroup.headers.length, noOfRows: 10})
+                    tableLoadingAnimation({noOfCols: headerGroup.headers.length, noOfRows: 6})
                 ))                 
                 }
                 {table.getRowModel().rows?.length ? (
