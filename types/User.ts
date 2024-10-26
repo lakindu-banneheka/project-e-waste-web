@@ -13,6 +13,10 @@ export interface BasicUser {
     userName: string;
     universityId: string; // university id
 }
+
+export interface User extends BasicUser {
+    _id: string;
+}
     
 export interface UserData extends BasicUser {
     _id: string;

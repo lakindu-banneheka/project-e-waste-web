@@ -74,7 +74,7 @@ export const SearchFilterComponent = <T,>({ table }: SearchFilterComponentProps<
     
 
     return (
-        <div className="flex space-x-4" >
+        <div className="flex space-x-4 " >
             {/* { activeFilter == 'receivedDate'
                 ? <>
                 <Form {...form}>
