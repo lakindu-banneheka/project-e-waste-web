@@ -1,4 +1,4 @@
-import { LayoutDashboardIcon, ListTodo, LayoutList, FileClock, CircuitBoard, Heater} from "lucide-react";
+import { LayoutDashboardIcon, ListTodo, LayoutList, FileClock, CircuitBoard, Heater, Users2Icon} from "lucide-react";
 
 export type Menu = {
     label: string
@@ -43,9 +43,9 @@ export const admin_menus: Menu[] = [
     },
     {
         label: "",
-        name: "Add Admin",
-        icon: <LayoutList size={15} className="mr-2" />,
-        href: "/admin/register",
+        name: "Users",
+        icon: <Users2Icon size={15} className="mr-2" />,
+        href: "/users",
     },
     {
         label: "",

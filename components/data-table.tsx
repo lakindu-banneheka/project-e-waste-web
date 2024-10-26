@@ -152,8 +152,8 @@ React.useEffect(() => {
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => (
                       <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
                       >
                       {row.getVisibleCells().map((cell) => (
                           <TableCell key={cell.id}>
@@ -168,8 +168,8 @@ React.useEffect(() => {
                 ) : ( !isPending &&
                 <TableRow>
                     <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
+                      colSpan={columns.length}
+                      className="h-24 text-center"
                     >
                         No results.
                     </TableCell>

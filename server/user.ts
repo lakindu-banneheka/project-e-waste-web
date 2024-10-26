@@ -76,3 +76,17 @@ export const getAllUsers = async (): Promise<User[] | undefined> => {
        console.error('Failed to find Projects: ', error);
     }
 }
+
+export const updateUserById = async ({user}: {user: User}) => {
+    try {
+        await startDb();
+        const res = await UserModel.findByIdAndUpdate(user._id, { ...user });
+        if(!res){
+            throw new Error('Failed to update the User.');
+        }
+        return JSON.stringify(res._id);
+        
+    } catch (error) {
+        console.error('Failed to update the User : ', error);
+    }
+}
