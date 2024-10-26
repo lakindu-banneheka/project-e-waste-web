@@ -225,6 +225,7 @@ const CreateNewProject = () => {
                                     { _getAllUsers.data?.map((member, i) => (
                                         form.getValues("members")?.includes(member._id) 
                                                 ? <MemberBadge
+                                                    key={i}
                                                     firstName={member.firstName}
                                                     lastName={member.lastName}
                                                 />
