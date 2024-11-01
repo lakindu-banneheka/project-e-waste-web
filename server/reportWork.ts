@@ -35,7 +35,6 @@ export const getAllReports = async (): Promise<Res_ReportWork[] | undefined> => 
             ...item,
             _id: item._id.toString(),
         }));
-
         return reports as Res_ReportWork[];
 
     } catch (error) {
@@ -44,7 +43,7 @@ export const getAllReports = async (): Promise<Res_ReportWork[] | undefined> => 
 }
 
 
-export const geRreportById = async ({id}: {id: string}) => {
+export const getReportById = async ({id}: {id: string}) => {
     
     try {
         await startDb();

@@ -24,5 +24,5 @@ const ReportWorkSchema = new Schema<ReportWorkDocument, {}, Methods>({
 
 },{timestamps: true});
 
-const ReportWorkModel = models.Project || model("ReportWork", ReportWorkSchema);
+const ReportWorkModel = models.ReportWork || model("ReportWork", ReportWorkSchema);
 export default ReportWorkModel as Model<ReportWorkDocument, {}, Methods>;

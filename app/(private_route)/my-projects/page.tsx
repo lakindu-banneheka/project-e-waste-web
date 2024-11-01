@@ -6,14 +6,10 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { DataTable } from "@/components/data-table"
 import { getAllProjects } from "@/server/project";
-import { useSession } from "next-auth/react";
-import { UserRole } from "@/types/User";
 
 
 const ViewProjectList = () => {
     const router = useRouter();
-    const user = useSession();
-    const user_role = user.data?.user.role || "";
 
     const { 
       mutate: server_getAllProjects,
@@ -45,7 +41,6 @@ const ViewProjectList = () => {
                 columns={columns}
                 data={data??[]}
                 isPending={isPending}
-                buttonDetails={user_role===UserRole.Admin?buttonDetails:undefined}
             />
             <div className="h-14" ></div>
         </div>

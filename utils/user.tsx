@@ -1,8 +1,9 @@
 'use client'
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { updateUserById } from "@/server/user";
+import { getUserNameById, updateUserById } from "@/server/user";
 import { User, UserRole } from "@/types/User";
 import { useMutation } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
 export const UpdateUser = ({ unit }: { unit: User }) => {
@@ -43,3 +44,28 @@ export const UpdateUser = ({ unit }: { unit: User }) => {
         </DropdownMenuItem>
     );
 };
+
+
+export const getUserNameBy_Id = ({_id}:{_id: string}) => {
+
+    const { data, mutate: server_getUserNameById } = useMutation({
+        mutationFn: getUserNameById,
+        onError: (error) => {
+            toast.error(error.toString());
+        },
+        onSuccess: () => {
+            toast.success("User data successfully updated.");
+            location.reload();
+        },
+    });
+
+    useEffect(() => {
+        server_getUserNameById({_id});
+    },[]);    
+
+    return (
+        <>
+            {data??""}
+        </>
+    );
+}

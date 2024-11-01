@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { Project } from "@/types/project";
-import { JoinProjectButton } from "@/utils/project";
 
 export const columns: ColumnDef<Project>[] = [
     {
@@ -139,11 +138,6 @@ export const columns: ColumnDef<Project>[] = [
                 >
                     View project details
                 </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-                <JoinProjectButton 
-                  project={unit}
-                />
             </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
