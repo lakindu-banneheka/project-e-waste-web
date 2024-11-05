@@ -11,6 +11,20 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
+const ProjectNameCell = ({ projectId }: { projectId: string }) => {
+  const { data, mutate: server_getProjectById } = useMutation({
+    mutationFn: getProjectById,
+    onError: (error) => {
+      toast.error(error.toString());
+    },
+  });
+
+  useEffect(() => {
+    server_getProjectById({ id: projectId });
+  }, [projectId, server_getProjectById]);
+
+  return <div className="capitalize text-left">{data?.name ?? ""}</div>;
+};
 
 export const columns: ColumnDef<ReportWork>[] = [
   // {
@@ -50,27 +64,29 @@ export const columns: ColumnDef<ReportWork>[] = [
         )
       },
       cell: ({ row }) => {
-
-        const _id = row.getValue("projectId") as string;
-        const { data, mutate: server_getProjectById } = useMutation({
-          mutationFn: getProjectById,
-          onError: (error) => {
-              toast.error(error.toString());
-          },
-        });
-  
-        useEffect(() => {
-            server_getProjectById({id: _id});
-        },[]);
-  
-
-        return (
-          <div className="capitalize text-left">
-            
-            {data?.name??""}
-          </div>
-        )
+        const projectId = row.getValue("projectId") as string;
+        return (<ProjectNameCell projectId={projectId} />);
       }
+      //   const _id = row.getValue("projectId") as string;
+      //   const { data, mutate: server_getProjectById } = useMutation({
+      //     mutationFn: getProjectById,
+      //     onError: (error) => {
+      //         toast.error(error.toString());
+      //     },
+      //   });
+  
+      //   useEffect(() => {
+      //       server_getProjectById({id: _id});
+      //   },[]);
+  
+
+      //   return (
+      //     <div className="capitalize text-left">
+            
+      //       {data?.name??""}
+      //     </div>
+      //   )
+      // }
   },
   {
     accessorKey: "dateSubmitted",
