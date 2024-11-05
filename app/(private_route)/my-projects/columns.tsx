@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { Project } from "@/types/project";
+import { ReportWorkDialog } from "@/components/custom-dialogs/report-work-dialog";
 
 export const columns: ColumnDef<Project>[] = [
     {
@@ -134,7 +135,7 @@ export const columns: ColumnDef<Project>[] = [
               {/* <DropdownMenuItem>View customer</DropdownMenuItem> */}
               <DropdownMenuItem>
                 <Link
-                    href={`/projects/${unit._id}`}
+                    href={`/my-projects/${unit._id}`}
                 >
                     View project details
                 </Link>

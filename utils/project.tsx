@@ -7,7 +7,27 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 
 export const getProjectDataBy_Id = ({_id}:{_id: string}) => {
+    const { data, mutate: server_getProjectById } = useMutation({
+        mutationFn: getProjectById,
+        onError: (error) => {
+            toast.error(error.toString());
+        },
+    });
 
+    useEffect(() => {
+        server_getProjectById({id: _id});
+    },[]);
+
+    return (
+        <>
+            {
+                data?.name??""
+            }
+        </>
+    );
+}
+
+export const getProjectDetailsById = ({_id}:{_id: string}) => {
     const { data, mutate: server_getProjectById } = useMutation({
         mutationFn: getProjectById,
         onError: (error) => {
@@ -23,13 +43,7 @@ export const getProjectDataBy_Id = ({_id}:{_id: string}) => {
         server_getProjectById({id: _id});
     },[]);
 
-    return (
-        <>
-            {
-                data?.name??""
-            }
-        </>
-    );
+    return ({data});
 }
 
 

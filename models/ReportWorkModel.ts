@@ -6,7 +6,7 @@ import { Document, Schema } from "mongoose";
 
 
 interface ReportWorkDocument extends ReportWork_BaseType, Document {
-
+    reviewedBy: String;
 }
 
 interface Methods {
@@ -19,7 +19,7 @@ const ReportWorkSchema = new Schema<ReportWorkDocument, {}, Methods>({
     dateSubmitted: {type: Date, required: true},
     status: {type: String, enum: ReportWork_Status, default: ReportWork_Status.PENDING},
     description: {type: String, required: true},
-    reviewedBy: {type:String, required: true},
+    reviewedBy: {type:String,  required: false, default: 'Unknown'},
     work_minutes: {type: Number, default: 0},
 
 },{timestamps: true});

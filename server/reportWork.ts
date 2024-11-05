@@ -5,14 +5,17 @@ import ReportWorkModel from "@/models/ReportWorkModel";
 import { ReportWork, ReportWork_BaseType } from "@/types/ReprotWork";
 
 
-export interface NewReprotWork extends ReportWork_BaseType {};
+export interface NewReprotWork extends ReportWork_BaseType {
+    reviewedBy: string;
+};
 export interface Res_ReportWork extends ReportWork {};
 
-export const ReportNewWork = async ({ReprotWorkData}: {ReprotWorkData: NewReprotWork}) => {
+export const ReportNewWork = async ({ReprotWorkData}: {ReprotWorkData: ReportWork_BaseType}) => {
     
     try {
         await startDb();
-        const newReport = await ReportWorkModel.create({...ReprotWorkData});
+        const reportWork_Data: NewReprotWork = {...ReprotWorkData, reviewedBy: ''}
+        const newReport = await ReportWorkModel.create({...reportWork_Data});
         if(!newReport){
             throw new Error('Failed to add new Report.');
         }

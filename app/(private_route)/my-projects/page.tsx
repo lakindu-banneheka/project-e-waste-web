@@ -3,13 +3,17 @@ import * as React from "react"
 import { columns } from "./columns";
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
 import { DataTable } from "@/components/data-table"
-import { getAllProjects } from "@/server/project";
+import { getAllProjects, Res_Project } from "@/server/project";
+import { useSession } from "next-auth/react";
 
 
 const ViewProjectList = () => {
-    const router = useRouter();
+    const user = useSession();
+    const user_Id = user.data?.user._id;
+    const [myProjectList,setMyProjectList] = React.useState<Res_Project[]>([]);
+    
+   
 
     const { 
       mutate: server_getAllProjects,
@@ -24,14 +28,14 @@ const ViewProjectList = () => {
         server_getAllProjects();
     }, []);
 
-    
-    const buttonDetails = {
-        name: "New Project",
-        onClick: () => {
-            router.replace('/projects/create');
-        },
-    };
-  
+    React.useEffect(() => {
+        if(user_Id && data){
+            setMyProjectList(data?.filter(item => item.members.includes(user_Id)))
+        } else {
+            setMyProjectList([]);
+        }
+    },[user_Id, data]);
+
     if(error){
       toast.error("Something went wrong. The projects can't be loaded. Please refresh the page.");
     }
@@ -39,7 +43,7 @@ const ViewProjectList = () => {
         <div className="w-full">
             <DataTable
                 columns={columns}
-                data={data??[]}
+                data={myProjectList}
                 isPending={isPending}
             />
             <div className="h-14" ></div>

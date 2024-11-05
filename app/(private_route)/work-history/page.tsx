@@ -4,8 +4,13 @@ import { getAllReports } from "@/server/reportWork";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { columns } from "./columns";
+import { ReportWork } from "@/types/ReprotWork";
+import { useSession } from "next-auth/react";
 
-const ReportWork = () => {
+const Report_Work = () => {
+  const user = useSession();
+  const user_Id = user.data?.user._id;
+  const [workHistory,setworkHistory] = React.useState<ReportWork[]>([]);
 
   const { 
       mutate: server_getAllReports,
@@ -20,6 +25,13 @@ const ReportWork = () => {
     server_getAllReports();
   }, []);
 
+  React.useEffect(() => {
+    if(user_Id && data){
+      setworkHistory(data?.filter(item => item.userId === user_Id))
+    } else {
+      setworkHistory([]);
+    }
+  },[user_Id, data]);
 
     return(
         <>
@@ -33,4 +45,4 @@ const ReportWork = () => {
     );
 }
 
-export default ReportWork;
+export default Report_Work;

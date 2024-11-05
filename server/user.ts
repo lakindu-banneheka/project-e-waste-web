@@ -52,6 +52,18 @@ export const getUserNameById = async ({_id}:{_id: string}) => {
     return res?.firstName + " " + res?.lastName;
 }
 
+export const getUserDataById = async ({_id}:{_id: string}) => {
+
+    try {        
+        await startDb();
+    
+        const res: (resUser | null) = await UserModel.findById(_id);
+    
+        return JSON.parse(JSON.stringify(res as resUser));
+    } catch (error) {
+       console.error('Failed to find the User by ID : ', error);
+    }
+}
 
 interface res_basicUser extends BasicUser {
     _id: string;

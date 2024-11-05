@@ -1,11 +1,15 @@
+'use client'
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { getProjectById } from "@/server/project";
 import { ReportWork } from "@/types/ReprotWork";
 import { formatDate } from "@/utils/dateUtils";
-import { getProjectDataBy_Id } from "@/utils/project";
+import { useMutation } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 
 export const columns: ColumnDef<ReportWork>[] = [
@@ -47,9 +51,23 @@ export const columns: ColumnDef<ReportWork>[] = [
       },
       cell: ({ row }) => {
 
+        const _id = row.getValue("projectId") as string;
+        const { data, mutate: server_getProjectById } = useMutation({
+          mutationFn: getProjectById,
+          onError: (error) => {
+              toast.error(error.toString());
+          },
+        });
+  
+        useEffect(() => {
+            server_getProjectById({id: _id});
+        },[]);
+  
+
         return (
           <div className="capitalize text-left">
-            {row.getValue("projectId")?getProjectDataBy_Id(row.getValue("projectId")):""}
+            
+            {data?.name??""}
           </div>
         )
       }
@@ -100,7 +118,7 @@ export const columns: ColumnDef<ReportWork>[] = [
       const minutes = work_mins % 60;           // Get remaining minutes
 
       return (
-        <div className="capitalize text-left">
+        <div className="capitalize ">
 
           {`${hours} h ${minutes} min`}
         </div>

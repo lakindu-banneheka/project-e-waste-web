@@ -2,6 +2,7 @@
 
 import { AddMembers, MemberBadge } from "@/components/add-members";
 import { ConfirmationDialog } from "@/components/custom-dialogs/confirmation-dialog";
+import { ReportWorkDialog } from "@/components/custom-dialogs/report-work-dialog";
 import { FormFieldSimpleDatePicker } from "@/components/forms/form-field-datepicker";
 import FormFieldInput from "@/components/forms/form-field-input";
 import { FormFieldSelect } from "@/components/forms/form-field-select";
@@ -217,7 +218,7 @@ const ProjectDetails = () => {
         <div className="flex flex-col space-y-10 items-center mt-5" >
             <div className="w-full" >
                 <h1 className="font-semibold text-2xl text-primary" >
-                    Create New Project
+                    Project Details
                 </h1>
             </div>
             <Form {...form}>
@@ -339,48 +340,9 @@ const ProjectDetails = () => {
                     </div>
                     <div className="mt-12" ></div>
                     <div className="flex flex-row justify-start items-center space-x-5" >
-                            <>
-                                { !isEditingState &&
-                                    <Button 
-                                        variant={'default'} 
-                                        className=" text-white dark:text-black" 
-                                        type={isEditingState?"submit":"button"}
-                                        onClick={(e)=>{
-                                            e.preventDefault();
-                                            if(user_role == UserRole.Admin){
-                                                setIsEditingState(true);
-                                            } else {
-                                                toast.error("You have to be an admin to update item data.")
-                                            }
-                                        }}    
-                                    >
-                                        Update Project
-                                    </Button>
-                                }
-                                { isEditingState &&
-                                    <Button variant={'default'} className=" text-white dark:text-black" type={isEditingState?"submit":"button"}   
-                                    >
-                                        { !update_ProjectById.isPending &&
-                                            "Save Updated data"
-                                        }
-                                        { update_ProjectById.isPending && 
-                                            "Updating..."
-                                        }    
-                                    </Button>
-                                }
-                            </>  
-                            
-                            <ConfirmationDialog
-                                triggerBtnLable="Delete"
-                                confirmationTopic="Do you want to delete this Project ?"
-                                confirmationDescription="This action cannot be undone. This will permanently delete project data from our servers."
-                                confirmBtnLable={
-                                    !delete_ProjectById.isPending ? "Delete" : "Deleting..."
-                                }
-                                confirmBtnVarient="destructive"
-                                triggerBtnVarient={'destructive'}
-                                onConfirm={onDelete}
-                                disabled={user_role != UserRole.Admin}
+                            <ReportWorkDialog 
+                                project_name={ProjectData?.name as string??""}
+                                project_id={ProjectData?._id as string??""}
                             />
                         </div>
                 </form>
