@@ -40,10 +40,10 @@ export const universityEmailSchema = z.string().regex(universityEmailRegex, {
 
 
 // Define the regex pattern for a strong password
-const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\S]{8,}$/;
 
 export const passwordSchema = z.string().regex(strongPasswordRegex, {
-    message: "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a digit, and a special character.",
+    message: "Password must be at least 8 characters long, with an uppercase letter, a lowercase letter, a digit, and a special character."
 });
 
 export const firstNameSchema =  z.string().min(3, "First name must be at least 3 characters long.");

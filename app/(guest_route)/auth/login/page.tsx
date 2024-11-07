@@ -72,9 +72,11 @@ const Login = () => {
 
     return (
         <>
-            <div className="w-full lg:grid  lg:grid-cols-2 h-screen md:overflow-auto">
-                <AuthBackground />
-                <div className="flex items-start justify-center py-12">
+            <div className="w-full h-full lg:grid lg:grid-cols-2">
+                <div className="w-full h-full lg:fixed lg:inset-y-0 lg:left-0 lg:w-1/2">
+                    <AuthBackground />
+                </div>
+                <div className="flex items-center justify-center py-12 lg:col-start-2 h-full overflow-y-auto">
                     <div className="mx-auto grid w-[350px] gap-6">
                         <div className="grid gap-2 w-full" >
                             <div className="flex justify-center w-full items-center" >

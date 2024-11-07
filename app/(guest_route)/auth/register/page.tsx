@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/server/user";
 import LogoImage from "@/assets/logo/logo";
+import { PrivacyPolicyDialog, TermsOfServiceDialog } from "@/components/custom-dialogs/terms-of-service-and-privacy-policy-dialog";
 
 const schema = z.object({
     role: userRoleSchema,
@@ -35,7 +36,7 @@ const schema = z.object({
 .refine(
     values => values.password === values.confirmPassword,
     {
-        message: "Passwords do not match.",
+        message: "Passwords must match.",
         path: ["confirmPassword"],
     }
 );
@@ -65,10 +66,10 @@ const Login = () => {
     } = useMutation({
         mutationFn: createUser,
         onSuccess: () => {
-            toast.success("New Contributer has been created.");
+            toast.success("Contributor account created successfully.");
             router.push('/auth/login');
         },
-        onError(error, variables, context) {
+        onError: (error) => {
             toast.error(error.message);
         },
     });
@@ -91,9 +92,12 @@ const Login = () => {
     };
 
     return (
-            <div className="w-full lg:grid lg:grid-cols-2">
-                <AuthBackground />
-                <div className="flex items-center justify-center py-12">
+        <>
+            <div className="w-full h-full lg:grid lg:grid-cols-2">
+                <div className="w-full h-full lg:fixed lg:inset-y-0 lg:left-0 lg:w-1/2">
+                    <AuthBackground />
+                </div>
+                <div className="flex items-center justify-center py-12 lg:col-start-2 h-full overflow-y-auto">
                     <div className="mx-auto grid w-[350px] gap-6">
                         <div className="grid gap-2 w-full" >
                             <div className="flex justify-center w-full items-center" >
@@ -221,7 +225,8 @@ const Login = () => {
                                     <div className="text-red-500 text-xs">{errors.confirmPassword.message}</div>
                                 )}
                             </div>
-                            <div className={`flex items-start justify-start space-x-2 ${errors.isTermsAccepted&&'text-red-500'}`}>
+                            <div className={`flex items-start justify-start space-x-2 `}>
+                            {/* ${errors.isTermsAccepted&&'text-red-500'} */}
                                 <Checkbox 
                                     {...register('isTermsAccepted')}
                                     onCheckedChange={(value)=>setValue('isTermsAccepted',Boolean(value))}
@@ -233,9 +238,10 @@ const Login = () => {
                                     className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                 >
                                     {`By creating an account you agree to our `}
-                                    <Link href={''} className="text-primary/80 underline" >
-                                        {`Terms Of Service and Privacy Policy.`}
-                                    </Link>
+                                    <TermsOfServiceDialog />
+                                    {' and '}
+                                    <PrivacyPolicyDialog />
+                                    {`.`}
                                 </label>
                             </div>
                             <Button 
@@ -255,6 +261,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+        </>
     );
 }
 
