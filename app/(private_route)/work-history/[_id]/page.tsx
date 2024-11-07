@@ -4,13 +4,14 @@ import FormFieldInput from "@/components/forms/form-field-input";
 import { FormFieldSelect } from "@/components/forms/form-field-select";
 import { FormFieldTextarea } from "@/components/forms/form-field-textarea";
 import { Form } from "@/components/ui/form";
+import { getProjectById } from "@/server/project";
 import { getReportById } from "@/server/reportWork";
 import { ReportWork_Status } from "@/types/ReprotWork";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
-import React, { useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -39,11 +40,12 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 
 
 const ReportDetails = () => {
+    const router = useRouter();
     const { data } = useSession();
     const user_id = data?.user._id || "";
     const user_role = data?.user.role;
     const { _id } = useParams();
-    
+    const [projectId, setProjectId] = useState<string>();
 
     // setup form 
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -70,25 +72,49 @@ const ReportDetails = () => {
     },[]);
     const reportData = getReportDataById?.data; 
 
-
-    // Default values setting - Text Fields
     useEffect(() => {
         if (reportData) {
-            form.reset({
-                _id: reportData._id,
-                project_name: reportData.projectId as string,
-                
-            });
+            setProjectId(reportData.projectId as string);
         }
     }, [reportData]);
 
-    useEffect(()=> {
-        if(reportData){
-            form.setValue("status", reportData.status);
-            // form.setValue("supervisor", ProjectData.supervisor as string);
-            // form.setValue("manager", ProjectData.manager as string);
+
+    const getProjectNameById = useMutation({
+        mutationFn: getProjectById,
+        onError: (error) => {
+          toast.error(error.toString());
+        },
+    });
+    const { mutate: server_getProjectById } = getProjectNameById;
+
+    useEffect(() => {
+        if(projectId){
+            server_getProjectById({ id: projectId });
         }
-    },[ reportData]);
+    }, [projectId, server_getProjectById]);
+    
+
+    // Default values setting - Text Fields
+    useEffect(() => {
+        let projectName = "";
+        if (reportData) {
+            if(getProjectNameById.data){
+                projectName = getProjectNameById.data?.name as string;
+            }
+            
+            form.reset({
+                _id: reportData._id,
+                project_name: projectName,
+                createdAt: reportData.createdAt,
+                updatedAt: reportData.updatedAt,
+                description: reportData.description,
+                dateSubmitted: reportData.dateSubmitted,
+                reviewedBy: reportData.reviewedBy,
+                status: reportData.status,
+                workHours: reportData.work_minutes,
+            });
+        }
+    }, [reportData, getProjectNameById.data]);
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
         // const project = {...data}
