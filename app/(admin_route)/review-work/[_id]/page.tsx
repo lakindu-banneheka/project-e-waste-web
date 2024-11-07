@@ -234,7 +234,8 @@ const ReportDetails = () => {
                                 onClick={() => {
                                     if(getReportDataById.data){
                                         let reportData = getReportDataById.data;
-                                        reportData.status = ReportWork_Status.APPROVED
+                                        reportData.status = ReportWork_Status.APPROVED;
+                                        reportData.reviewedBy = user_id;
                                         update_ReportStatus({report: reportData});
                                     }
                                 }}
@@ -247,7 +248,8 @@ const ReportDetails = () => {
                                 onClick={()=> {
                                     if(getReportDataById.data){
                                         let reportData = getReportDataById.data;
-                                        reportData.status = ReportWork_Status.DECLINED
+                                        reportData.status = ReportWork_Status.DECLINED;
+                                        reportData.reviewedBy = user_id;
                                         update_ReportStatus({report: reportData});
                                     }
                                 }}
