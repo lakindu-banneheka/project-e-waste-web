@@ -88,7 +88,6 @@ export function DataTable<TData, TValue>({
 
   // Update rowSelection based on selectedUserIds array
 React.useEffect(() => {
-  console.log('123 run')
   if (selectedUserIds && selectedUserIds.length > 0) {
     // Calculate rows to be selected based on selectedUserIds
     const updatedSelection: Record<string, boolean> = {};
