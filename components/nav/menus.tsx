@@ -65,12 +65,12 @@ export const admin_menus: Menu[] = [
         icon: <CircuitBoard size={15} className="mr-2" />,
         href: "/e-waste/recovered-items",
     },
-    {
-        label: "E-Waste",
-        name: "Failure Reasons",
-        icon: <CircuitBoard size={15} className="mr-2" />,
-        href: "/e-waste/failure-reasons",
-    },
+    // {
+    //     label: "E-Waste",
+    //     name: "Failure Reasons",
+    //     icon: <CircuitBoard size={15} className="mr-2" />,
+    //     href: "/e-waste/failure-reasons",
+    // },
 ];
 
 export const contributor_menus: Menu[] = [
