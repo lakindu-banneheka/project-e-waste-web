@@ -13,6 +13,7 @@ import { deleteProjectById, getProjectById, updateProjectById } from "@/server/p
 import { getAllAdmins_name_id, getAllUsers } from "@/server/user";
 import { Project_Status } from "@/types/project";
 import { UserRole } from "@/types/User";
+import { JoinProjectButton } from "@/utils/project";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -339,49 +340,63 @@ const ProjectDetails = () => {
                     </div>
                     <div className="mt-12" ></div>
                     <div className="flex flex-row justify-start items-center space-x-5" >
-                            <>
-                                { !isEditingState &&
-                                    <Button 
-                                        variant={'default'} 
-                                        className=" text-white dark:text-black" 
-                                        type={isEditingState?"submit":"button"}
-                                        onClick={(e)=>{
-                                            e.preventDefault();
-                                            if(user_role == UserRole.Admin){
-                                                setIsEditingState(true);
-                                            } else {
-                                                toast.error("You have to be an admin to update item data.")
+                        { user_role === UserRole.Contributor
+                            ?<div className="pt-8">
+                            { ProjectData
+                                ?<JoinProjectButton
+                                    project={ProjectData}
+                                />
+                                : <></>
+                            }
+                            </div>
+                            :<>
+                                <>
+                                    { !isEditingState &&
+                                        <Button 
+                                            variant={'default'} 
+                                            className=" text-white dark:text-black" 
+                                            type={isEditingState?"submit":"button"}
+                                            onClick={(e)=>{
+                                                e.preventDefault();
+                                                if(user_role == UserRole.Admin){
+                                                    setIsEditingState(true);
+                                                } else {
+                                                    toast.error("You have to be an admin to update item data.")
+                                                }
+                                            }}    
+                                        >
+                                            Update Project
+                                        </Button>
+                                    }
+                                    { isEditingState &&
+                                        <Button variant={'default'} className=" text-white dark:text-black" type={isEditingState?"submit":"button"}   
+                                        >
+                                            { !update_ProjectById.isPending &&
+                                                "Save Updated data"
                                             }
-                                        }}    
-                                    >
-                                        Update Project
-                                    </Button>
-                                }
-                                { isEditingState &&
-                                    <Button variant={'default'} className=" text-white dark:text-black" type={isEditingState?"submit":"button"}   
-                                    >
-                                        { !update_ProjectById.isPending &&
-                                            "Save Updated data"
-                                        }
-                                        { update_ProjectById.isPending && 
-                                            "Updating..."
-                                        }    
-                                    </Button>
-                                }
-                            </>  
+                                            { update_ProjectById.isPending && 
+                                                "Updating..."
+                                            }    
+                                        </Button>
+                                    }
+                                </>  
+                                <ConfirmationDialog
+                                    triggerBtnLable="Delete"
+                                    confirmationTopic="Do you want to delete this Project ?"
+                                    confirmationDescription="This action cannot be undone. This will permanently delete project data from our servers."
+                                    confirmBtnLable={
+                                        !delete_ProjectById.isPending ? "Delete" : "Deleting..."
+                                    }
+                                    confirmBtnVarient="destructive"
+                                    triggerBtnVarient={'destructive'}
+                                    onConfirm={onDelete}
+                                    disabled={user_role != UserRole.Admin}
+                                />
                             
-                            <ConfirmationDialog
-                                triggerBtnLable="Delete"
-                                confirmationTopic="Do you want to delete this Project ?"
-                                confirmationDescription="This action cannot be undone. This will permanently delete project data from our servers."
-                                confirmBtnLable={
-                                    !delete_ProjectById.isPending ? "Delete" : "Deleting..."
-                                }
-                                confirmBtnVarient="destructive"
-                                triggerBtnVarient={'destructive'}
-                                onConfirm={onDelete}
-                                disabled={user_role != UserRole.Admin}
-                            />
+                            </>
+
+                        }
+                            
                         </div>
                 </form>
             </Form>

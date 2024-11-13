@@ -140,11 +140,6 @@ export const columns: ColumnDef<Project>[] = [
                     View project details
                 </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-                <JoinProjectButton 
-                  project={unit}
-                />
-            </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )

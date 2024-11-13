@@ -67,8 +67,8 @@ export const JoinProjectButton = ({project}:{project: Project}) => {
     return (
         <>
             <Button
-                variant={'ghost'}
-                className="h-2 hover:bg-transparent"
+                variant={'default'}
+                className=" text-white dark:text-black" 
                 onClick={()=>{
                     if(user_Id){
                         if(project.members.includes(user_Id)){
