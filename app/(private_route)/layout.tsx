@@ -15,16 +15,19 @@ export default async function GestLayout ({ children }: Props) {
 
     return (
       <>
-        <Header />
-        <div className="flex h-screen w-full min-w-[480px]">
-          <div className="hidden md:block h-full">
-              <SidebarMenu />
-          </div>
-          <div className="w-full px-10 py-5" >
-            {children}
-          </div>
-        </div>
-        
-      </>
+  <Header />
+  <div className="flex h-screen w-full min-w-[480px]">
+    {/* Sidebar - visible only on medium and larger screens */}
+    <div className="hidden md:block lg:fixed lg:inset-y-0 h-full w-[250px] pt-14">
+      <SidebarMenu />
+    </div>
+    
+    {/* Main content area */}
+    <div className="w-full px-10 py-5 lg:ml-[250px]">
+      {children}
+    </div>
+  </div>
+</>
+
     );
 } 

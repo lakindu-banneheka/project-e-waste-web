@@ -20,26 +20,30 @@ import { FormFieldSimpleDatePicker } from "@/components/forms/form-field-datepic
 import { FormFieldSelect } from "@/components/forms/form-field-select";
 
 const FormSchema = z.object({
-    name: z.string().min(2, {
-        message: "name must be at least 2 characters.",
+    name: z.string().min(3, {
+        message: "The inventory name must be at least 3 characters long.",
     }),
     type: z.nativeEnum(EWasteInventoryType, {
-        errorMap: () => ({ message: "Invalid inventory type." }),
+        errorMap: () => ({ message: "Please select a valid inventory type from the list." }),
     }),
-    source: z.string().min(2, {
-        message: "source must be at least 2 characters.",
+    source: z.string().min(3, {
+        message: "The source field requires a description with at least 3 characters.",
     }),
     condition: z.nativeEnum(EWasteInventoryCondition, {
-        errorMap: () => ({ message: "Invalid inventory condition" }),
+        errorMap: () => ({ message: "Please select a valid inventory condition from the list." }),
     }),
-    receivedDate: z.date(),
-    description: z.string().min(2, {
-        message: "type must be at least 2 characters.",
+    receivedDate: z.date({
+        required_error: "Please enter the date when the inventory item was received.",
+        invalid_type_error: "The received date must be a valid date format.",
+    }),
+    description: z.string().min(3, {
+        message: "Provide a description of at least 3 characters for the inventory item.",
     }),
     acceptedPerson: z.string().regex(/^[a-f\d]{24}$/i, {
-        message: "Select an admin",
+        message: "Please select an administrator for this inventory item.",
     })
 });
+
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 const AddNewInventoryItem = () => {
@@ -50,10 +54,10 @@ const AddNewInventoryItem = () => {
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            name: "",
-            source: "",
+            // name: "",
+            // source: "",
             receivedDate: new Date(),
-            description: ""
+            // description: ""
         },
     });
 
@@ -70,8 +74,6 @@ const AddNewInventoryItem = () => {
             toast.error("Something went wrong.");
         },
     });
-
-
 
     // get all the admin data for select
     const getAdminData = useMutation({
@@ -105,46 +107,49 @@ const AddNewInventoryItem = () => {
                     <FormFieldInput<FormSchemaType>
                         control={form.control}
                         name="name"
-                        label="Name"
+                        label="Name *"
                         placeholder="Name"
                     />
                     <FormFieldSelect<FormSchemaType>
                         control={form.control}
                         name="type"
-                        label="Type"
+                        label="Type *"
                         placeholder="Select a Type"
                         options={Object.values(EWasteInventoryType).map(item => ({ value: item, label: item.valueOf() })) || []}
+                        error={form.formState.errors.type?.message}
                     />
                     <FormFieldInput<FormSchemaType>
                         control={form.control}
                         name="source"
-                        label="Source"
+                        label="Source *"
                         placeholder="Source"
                     />
                     <FormFieldSelect<FormSchemaType>
                         control={form.control}
                         name="condition"
-                        label="Condition"
+                        label="Condition *"
                         placeholder="Select a Condition"
                         options={Object.values(EWasteInventoryCondition).map(item => ({ value: item, label: item.valueOf() })) || []}
+                        error={form.formState.errors.condition?.message}
                     />
                     <FormFieldSimpleDatePicker<FormSchemaType>
                         control={form.control}
                         name="receivedDate"
-                        label="Received Date"
+                        label="Received Date *"
                     />
                     <FormFieldSelect<FormSchemaType>
                         control={form.control}
                         name="acceptedPerson"
-                        label="Accepted Person"
+                        label="Accepted Person *"
                         placeholder="Select the e-waste batch accepted person"
                         options={getAdminData.data?.map(item => ({ value: item._id, label: item.name })) || []}
                         isLoadingOptions={getAdminData.isPending}
+                        error={form.formState.errors.acceptedPerson?.message}
                     />
                     <FormFieldTextarea<FormSchemaType> 
                         name='description'
                         control={form.control}
-                        label="Description"
+                        label="Description *"
                         placeholder="Description"
                     />
                     <div className="mt-12" ></div>

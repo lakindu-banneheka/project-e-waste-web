@@ -37,7 +37,7 @@ const Report_Work = () => {
         <>
             <DataTable
                 columns={columns}
-                data={data??[]}
+                data={workHistory??[]}
                 isPending={isPending}
             />
             <div className="h-14" ></div>

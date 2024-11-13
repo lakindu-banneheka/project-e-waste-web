@@ -6,7 +6,7 @@ export const AuthBackground = () => {
     return (
         <>
             <div
-                    className="hidden bg-muted lg:block h-full"
+                    className="hidden bg-muted lg:block h-full w-full"
                     // xl:min-h-[800px] lg:min-h-[600px]
                 >
                     <Image
@@ -16,7 +16,7 @@ export const AuthBackground = () => {
                         height="1080" 
                         className="h-full w-full object-cover dark:brightness-[0.8] " // dark:grayscale
                     />
-                    <div className="absolute top-1/2 left-1/4 transform -translate-x-1/2 -translate-y-1/2 flex flex-col w-1/2">  
+                    <div className="absolute top-1/2 left-1/4 transform -translate-x-1/3 -translate-y-1/2 flex flex-col w-full">  
                         <h1 className="text-7xl font-bold font-mono flex flex-col justify-start items-start w-full pl-28">
                             <span>
                                 Join Our
