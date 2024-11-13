@@ -14,6 +14,7 @@ interface FormFieldSelectProps<TFieldValues extends FieldValues> {
   className?: string;
   isLoading?: boolean;
   isLoadingOptions?: boolean;
+  error?: string;
 }
 
 export const FormFieldSelect = <TFieldValues extends FieldValues>({
@@ -26,11 +27,12 @@ export const FormFieldSelect = <TFieldValues extends FieldValues>({
   isLoading = false,
   isLoadingOptions = false,
   className,
+  error
 }: FormFieldSelectProps<TFieldValues>) => {
   return (
     <FormItem className={className}>
       <div className="flex flex-col space-y-3 md:space-y-0 w-10/12 md:flex-row items-start justify-start">
-        <FormLabel className="mt-2 mr-5 w-28 min-w-28">{label}</FormLabel>
+        <FormLabel className={`mt-2 mr-5 w-28 min-w-28 ${error?'text-destructive':''}`}>{label}</FormLabel>
         {isLoading && <Skeleton className="w-full h-10" />}
         {!isLoading && (
           <Controller
@@ -64,7 +66,9 @@ export const FormFieldSelect = <TFieldValues extends FieldValues>({
           />
         )}
       </div>
-      <FormMessage className="ml-32" />
+      <FormMessage className="ml-32" >
+        {error && <span className="text-destructive text-sm">{error}</span>}
+      </FormMessage>
     </FormItem>
   );
 };
