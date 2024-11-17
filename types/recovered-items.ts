@@ -191,6 +191,12 @@ export type ItemCharacteristicsMap = {
     [ItemType.Motor]: MotorCharacteristics;
 };
 
+export enum Status {
+    APPROVED = "Approved",
+    DECLINED = "Declined",
+    PENDING = "Pending"
+}
+
 // RecoveryDetail structure
 export interface RecoveryLogs {
     id: string;
@@ -198,7 +204,8 @@ export interface RecoveryLogs {
     ewaste_unit_id: string; // Reference ID to a specific e-waste unit
     recovered_date: Date;
     no_of_items: number;
-    failure_reasons: string[]; // Array of IDs referencing FailureReasons
+    status: Status;
+    // failure_reasons: string[]; // Array of IDs referencing FailureReasons
 }
 
 // Main RecoveredItems interface
@@ -206,6 +213,7 @@ export interface RecoveredItems_BaseType {
     type: ItemType; // Use the enum here
     description: string;
     count: number;
+    status: Status;
     characteristics: ItemCharacteristicsMap[ItemType]; // Conditional characteristics based on type
     recoveryLogs: RecoveryLogs[];
 }
