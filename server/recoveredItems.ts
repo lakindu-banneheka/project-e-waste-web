@@ -2,7 +2,7 @@
 
 import startDb from "@/lib/db";
 import RecoveredItemsModel from "@/models/recoveredItemsModel";
-import { RecoveredItems, RecoveredItems_BaseType } from "@/types/recovered-items";
+import { InventoryAction, RecoveredItems, RecoveredItems_BaseType, RecoveryLogs } from "@/types/recovered-items";
 
 // Extend the base type to include additional properties for server logic
 export interface NewRecoveredItem extends RecoveredItems_BaseType {};
@@ -71,6 +71,54 @@ export const updateRecoveredItemById = async ({ item }: { item: RecoveredItems }
         console.error('Failed to update the recovered item: ', error);
     }
 };
+
+// add new recovery log by Recovered item ID
+export const addRecoveryLog = async ({
+    recoveredItemId,
+    log
+}: {
+    recoveredItemId: string;
+    log: RecoveryLogs;
+}) => {
+    try {
+        await startDb();
+        const _data: Res_RecoveredItem | null = await RecoveredItemsModel.findById(recoveredItemId).lean();
+        if (!_data) {
+            throw new Error('Failed to find the recovered item by ID.');
+        }
+        const item = { ..._data, _id: _data._id.toString() };
+        let count = item.count;
+
+        if(log.inventoryAction === InventoryAction.ReleaseItem && log.no_of_items > item.count){
+            throw new Error('Insufficient items.');
+        } else if(log.inventoryAction === InventoryAction.ReleaseItem){
+            count -= log.no_of_items;
+        } else if(log.inventoryAction === InventoryAction.AddItem){
+            count += log.no_of_items;
+        }
+
+        // Update the logs array by pushing a new log
+        const res = await RecoveredItemsModel.findByIdAndUpdate(
+            recoveredItemId,
+            { 
+                $push: { recoveryLogs: log }, // Push the new log into the logs array
+                updatedAt: new Date(), // Update the updatedAt field
+                count: count // update the count of the items
+            },
+            { new: true } // Return the updated document
+        );
+
+        if (!res) {
+            throw new Error('Failed to update the recovered item.');
+        }
+
+        return JSON.stringify(res._id); // Return the updated item ID as a string
+    } catch (error) {
+        console.error('Failed to update the recovered item: ', error);
+        throw error; // Re-throw the error for upstream handling
+    }
+};
+
 
 // Delete a recovered item by ID
 export const deleteRecoveredItemById = async ({ id }: { id: string }) => {

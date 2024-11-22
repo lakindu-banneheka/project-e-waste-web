@@ -12,6 +12,7 @@ interface FormFieldTextareaProps<TFieldValues extends FieldValues> {
     disabled?: boolean;
     className?: string; 
     isLoading?: boolean;
+    error?: string;
 }
 
 
@@ -23,6 +24,7 @@ export const FormFieldTextarea = <TFieldValues extends FieldValues>({
     disabled=false,
     isLoading=false,
     className,
+    error
 }: FormFieldTextareaProps<TFieldValues>) => {
     return (
         <FormField
@@ -41,7 +43,9 @@ export const FormFieldTextarea = <TFieldValues extends FieldValues>({
                             </FormControl>
                         }
                     </div>
-                    <FormMessage className="ml-32" />
+                    <FormMessage className="ml-32" >
+                        {error && <span className="text-destructive text-sm">{error}</span>}
+                    </FormMessage>
                 </FormItem>
             )}
         />

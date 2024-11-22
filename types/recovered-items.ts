@@ -197,13 +197,20 @@ export enum Status {
     PENDING = "Pending"
 }
 
+export enum InventoryAction {
+    AddItem = "ADD_ITEM", // Action for adding items to the inventory
+    ReleaseItem = "RELEASE_ITEM", // Action for releasing items from the inventory
+}  
+
 // RecoveryDetail structure
 export interface RecoveryLogs {
-    id: string;
-    condition: "working" | "fault";
+    id?: string;
+    inventoryAction: InventoryAction;
     ewaste_unit_id: string; // Reference ID to a specific e-waste unit
     recovered_date: Date;
     no_of_items: number;
+    recoveredBy: string;
+    approvedBy?: string;
     status: Status;
     // failure_reasons: string[]; // Array of IDs referencing FailureReasons
 }

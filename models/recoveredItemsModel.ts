@@ -1,7 +1,8 @@
 // RecoveredItems Schema
 import { Schema, model, models, Model, Document } from "mongoose";
-import { ItemType, Status } from "@/types/recovered-items";
+import { InventoryAction, ItemType, Status } from "@/types/recovered-items";
 import { RecoveryLogs } from "@/types/recovered-items";
+import { v4 as uuidv4 } from 'uuid';
 
 // Interface for the RecoveredItems document
 interface RecoveredItemsDocument extends Document {
@@ -15,8 +16,13 @@ interface RecoveredItemsDocument extends Document {
 
 // Schema for recovery logs
 const RecoveryLogsSchema = new Schema<RecoveryLogs>({
-    id: { type: String, required: true },
-    condition: { type: String, enum: ["working", "fault"], required: true },
+    id: { 
+        type: String, 
+        default: () => uuidv4() // Auto-generate a UUID
+    },
+    inventoryAction: { type: String, enum: InventoryAction, required: true },
+    approvedBy: {type: String, required: false},
+    recoveredBy: {type: String, required: true},
     ewaste_unit_id: { type: String, required: true },
     recovered_date: { type: Date, required: true },
     no_of_items: { type: Number, required: true },
