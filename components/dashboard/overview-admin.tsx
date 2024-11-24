@@ -35,7 +35,9 @@ const chartConfig = {
     label: "Work Hours (Declined)",
   },
 } satisfies ChartConfig
-export function Overview({
+
+
+export function OverviewAdmin({
   data,
   projectSummary
 }: {
@@ -65,12 +67,12 @@ export function Overview({
     Pending: entry.pending_hours,
   }))
   return (
-    <Card className="min-w-[420px] overflow-x-auto">
-      <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+    <Card className="min-w-[420px] overflow-x-auto" >
+      <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 md:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Work Summary</CardTitle>
+          <CardTitle>Summary</CardTitle>
           <CardDescription>
-            your work summary
+            Summary
           </CardDescription>
         </div>
         <div className="flex">
@@ -118,8 +120,8 @@ export function Overview({
                         />
                       }
                     />
-                    <Bar dataKey="Approved" fill="hsl(var(--primary))" radius={4} />
-                    <Bar dataKey="Pending" fill="hsl(var(--secondary))" radius={4} />
+                    <Bar dataKey="Pending" fill="hsl(var(--primary))" radius={4} />
+                    <Bar dataKey="Approved" fill="hsl(var(--secondary))" radius={4} />
                   </BarChart>
                 </ChartContainer>
             </>
