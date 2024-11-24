@@ -6,7 +6,7 @@ import { Project_BaseType, Project_Status } from "@/types/project";
 
 
 interface ProjectDocument extends Project_BaseType, Document {
-
+    _id: string;
 }
 
 interface Methods {
