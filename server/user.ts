@@ -71,18 +71,29 @@ export const getUserNameById = async ({_id}:{_id: string}) => {
     return res?.firstName + " " + res?.lastName;
 }
 
-export const getUserDataById = async ({_id}:{_id: string}) => {
-
-    try {        
+export const getUserDataById = async ({ _id }: { _id: string }): Promise<resUser | undefined> => {
+    try {
         await startDb();
-    
-        const res: (resUser | null) = await UserModel.findById(_id);
-    
-        return JSON.parse(JSON.stringify(res as resUser));
+
+        // Fetch the user by ID and use .lean() for better performance
+        const res = await UserModel.findById(_id).lean();
+
+        if (!res) {
+            throw new Error(`User with ID ${_id} not found.`);
+        }
+
+        // Ensure the `_id` is converted to a string
+        const user: resUser = {
+            ...res,
+            _id: res._id.toString(),
+        };
+
+        return user;
     } catch (error) {
-       console.error('Failed to find the User by ID : ', error);
+        console.error('Failed to find the User by ID: ', error);
     }
-}
+};
+
 
 interface res_basicUser extends BasicUser {
     _id: string;
@@ -94,7 +105,7 @@ export const getAllUsers = async (): Promise<User[] | undefined> => {
         await startDb();
         const res: res_basicUser[] = await UserModel.find({}).lean();
         if(!res){
-            throw new Error('Failed to find Projects.');
+            throw new Error('Failed to find users.');
         }
         const projects = res.map(item => ({
             ...item,
@@ -104,7 +115,7 @@ export const getAllUsers = async (): Promise<User[] | undefined> => {
         return projects as res_basicUser[];
 
     } catch (error) {
-       console.error('Failed to find Projects: ', error);
+       console.error('Failed to find users: ', error);
     }
 }
 

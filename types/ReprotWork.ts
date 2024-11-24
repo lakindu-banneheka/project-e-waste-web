@@ -22,3 +22,16 @@ export interface ReportWork extends ReportWork_BaseType {
     createdAt: Date,
     updatedAt: Date
 }
+
+// // Dashboard
+// export interface WeeklyWorkHours { // For the chart
+//     week: string; 
+//     hours: number
+// }
+
+// export interface WorkSummary {
+//     totalApprovedHours: number;
+//     totalPendingHours: number;
+//     totalDeclinedHours: number;
+//     weeklyWorkHours: WeeklyWorkHours[]; // For the chart
+// }
