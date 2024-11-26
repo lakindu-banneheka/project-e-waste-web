@@ -47,8 +47,9 @@ export default function ForgotPasswordStepperForm({
     });
 	
 	const sendOTPReq = async ({email}:{email: string}) => {
+		console.log("test mail", email)
 		server_sendOTPMail({
-            email: 'lakindu2001l@gmail.com'
+            email: email
         });
 		return await isSuccess;
 	}
@@ -59,7 +60,7 @@ export default function ForgotPasswordStepperForm({
 				{steps.map((stepProps, index) => {
 					if (index === 0) {
 						return (
-							<Step key={stepProps.label} {...stepProps}>
+							<Step key={stepProps.label} {...stepProps} >
 								<div className="h-40 w-100 flex items-center justify-center my-2rounded-md">
 									<FirstStepForm 
 										setEmail={setEmail}
@@ -136,20 +137,20 @@ function FirstStepForm({
                 <Form {...email_form}>
                     <form onSubmit={email_form.handleSubmit(onSubmit)} className="w-full space-y-3">
                         <FormField
-                        control={email_form.control}
-                        name="email"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                                <Input placeholder="example@stu.kln.ac.lk" {...field} />
-                            </FormControl>
-                            <FormDescription>
-                                Please Enter your Email address to receive a verification OTP 
-                            </FormDescription>
-                            <FormMessage className="text-red-500" />
-                            </FormItem>
-                        )}
+							control={email_form.control}
+							name="email"
+							render={({ field }) => (
+								<FormItem>
+								<FormLabel>Email</FormLabel>
+								<FormControl>
+									<Input placeholder="example@stu.kln.ac.lk" {...field} />
+								</FormControl>
+								<FormDescription>
+									Please Enter your Email address to receive a verification OTP 
+								</FormDescription>
+								<FormMessage className="text-red-500" />
+								</FormItem>
+							)}
                         />
                         <Button type="submit" disabled={isPending}>Send OTP</Button>
                     </form>
@@ -173,7 +174,7 @@ function SecondStepForm({
 	isResendEmailPending
 }: SecondStepFormProps) {
 	const { nextStep } = useStepper();
-	console.log(email, sendOTPReq);
+	// console.log(email);
 	const { 
         mutate: server_verifyEmail,
         isPending,

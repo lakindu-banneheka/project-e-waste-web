@@ -1,64 +1,77 @@
-'use server'
+'use server';
+
 import startDb from '@/lib/db';
 import OTPModel from '@/models/OTPModel';
-import { Base_OTPProps } from '@/types/OTP';
-import nodemailer from 'nodemailer';
 import { otpGen } from 'otp-gen-agent';
+import nodemailer from 'nodemailer';
+import { Base_OTPProps } from '@/types/OTP';
 
-interface OTPMAilProps {
-    email: string;
-    subject?: string;
-    text?: string;
-    html?: string;
+interface OTPMailProps {
+  email: string;
+  subject?: string;
+  text?: string;
+  html?: string;
 }
 
 export const sendOTPMail = async ({
-    email,
-    subject,
-    text,
-    html
-}: OTPMAilProps) => {
-    
-    const otp = await otpGen();
-    const htmlbody = getHtmlBody({otp: otp});
-    try {
-    
+  email,
+  subject = 'Your Verification Code',
+  text,
+  html,
+}: OTPMailProps): Promise<void> => {
+  if (!email) {
+    throw new Error('Email address is required.');
+  }
+
+  // Generate OTP
+  const otp = await otpGen();
+
+  // Default HTML body
+  const htmlBody = html || getHtmlBody(otp);
+
+  try {
+    // Ensure database connection
+    await startDb();
+
+    // Save OTP to the database
+    // await OTPModel.create({ email, otp, is_used:false });
+
+    // Check environment variables
+    const { NODEMAILER_EMAIL, NODEMAILER_PASSWORD } = process.env;
+    if (!NODEMAILER_EMAIL || !NODEMAILER_PASSWORD) {
+      throw new Error('Missing email credentials in environment variables.');
+    }
+
+    // Create a Nodemailer transporter
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        // host: '',
-        // port: 456,
-        secure: true,
-        auth: {
-          user: process.env.NODEMAILER_EMAIL,
-          pass: process.env.NODEMAILER_PASSWORD
-        }
+      service: 'gmail',
+      secure: true,
+      auth: {
+        user: NODEMAILER_EMAIL,
+        pass: NODEMAILER_PASSWORD,
+      },
     });
 
+    // Email options
     const mailOptions = {
-        from: process.env.NODEMAILER_EMAIL,
-        to: email,
-        subject: 'Sending Email using Node.js',
-        text: 'That was easy!',
-        html: htmlbody
+      from: NODEMAILER_EMAIL,
+      to: email,
+      subject,
+      text: text || 'Please verify your email address using the OTP provided.',
+      html: htmlBody,
     };
 
-        await startDb();
-        const newOTP = await OTPModel.create({email: email, otp: otp});
-    
-        transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-                console.log(error);
-            } else {
-                console.log(info.response);
-            }
-        });
-        
-    } catch (error) {
-        console.log(error);
-    }
-    
+    // Send email
+    const info = await transporter.sendMail(mailOptions);
 
-}
+    // Log success response
+    console.log(`Email sent successfully: ${info.response}`);
+  } catch (error) {
+    console.error('Error sending OTP email:', error);
+    throw new Error('Failed to send OTP email. Please try again later.');
+  }
+};
+
 
 const getHtmlBody = ({otp}:{otp: string}) => {
 
