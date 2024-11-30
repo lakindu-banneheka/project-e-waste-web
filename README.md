@@ -1,1 +1,1 @@
-project e-waste
+project e-waste project 
